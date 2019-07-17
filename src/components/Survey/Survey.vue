@@ -204,13 +204,15 @@ export default {
       this.updateProgress();
     },
     setScore(scoreObj, index) {
-      this.$emit('saveScores', this.context[index]['@id'], scoreObj);
+      console.log(207, 'setscore in survey', scoreObj, index);
+      this.$emit('saveResponse', this.context[index]['@id'], scoreObj);
     },
     restart() {
       this.$emit('clearResponses');
       this.listShow = [0];
     },
     evaluateString(string, responseMapper) {
+      console.log(214, string, responseMapper);
       const keys = Object.keys(responseMapper);
       let output = string;
       _.map(keys, (k) => {
@@ -221,6 +223,7 @@ export default {
             val = `'${val}'`; // put the string in quotes
           }
           output = output.replace(k, val);
+          console.log(225, k, val, output);
         } else {
           output = output.replace(k, 0);
         }
@@ -266,6 +269,7 @@ export default {
     getVisibility(responses) {
       const responseMapper = this.responseMapper(responses);
       if (!_.isEmpty(this.activity['https://schema.repronim.org/visibility'])) {
+        console.log(268, 'in survey vis', this.activity['https://schema.repronim.org/visibility']);
         const visibilityMapper = {};
         _.map(this.activity['https://schema.repronim.org/visibility'], (a) => {
           let val = a['@value'];
@@ -277,6 +281,7 @@ export default {
           }
           // visibilityMapper[responseMapper[a['@index']].ref] = val;
         });
+        console.log(281, 'survey vis', visibilityMapper);
         return visibilityMapper;
       }
       return {};
@@ -349,6 +354,16 @@ export default {
       return [{}];
     },
     shouldShow() {
+      console.log('shouldshow', _.map(this.contextReverse, (o, index) => {
+        const criteria1 = this.listShow.indexOf(this.contextReverse.length - index - 1) >= 0;
+        console.log(35, this.listShow, this.contextReverse.length, index, criteria1);
+        let criteria2 = true;
+        if (!_.isEmpty(this.visibility)) {
+          criteria2 = this.visibility[o['@id']];
+          console.log(36, o, index, this.visibility[o['@id']]);
+        }
+        return criteria1 && criteria2;
+      }));
       return _.map(this.contextReverse, (o, index) => {
         const criteria1 = this.listShow.indexOf(this.contextReverse.length - index - 1) >= 0;
         let criteria2 = true;

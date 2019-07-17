@@ -194,15 +194,16 @@ export default {
       currResponses[this.context[index]['@id']] = value;
       // TODO: add back branching logic
       this.visibility = this.getVisibility(currResponses);
-
       // TODO: add back scoring logic to this component.
       if (!_.isEmpty(this.activity['https://schema.repronim.org/scoringLogic'])) {
+        console.log(199, this.responses);
         _.map(this.getScoring(this.responses), (score, key) => {
           if (!_.isNaN(score)) {
             this.scores[key] = score;
           }
         });
         if (!_.isEmpty(this.scores)) {
+          console.log(206, 'save sec score', this.srcUrl, this.scores);
           this.$emit('saveScores', this.srcUrl, this.scores);
         }
       }
@@ -213,6 +214,7 @@ export default {
       const responseMapper = this.responseMapper(responses);
       if (!_.isEmpty(this.activity['https://schema.repronim.org/scoringLogic'])) {
         const scoreMapper = {};
+        console.log(217, 'get response mapper', responseMapper);
         _.map(this.activity['https://schema.repronim.org/scoringLogic'], (a) => {
           let val = a['@value'];
           if (_.isString(a['@value'])) {
@@ -222,6 +224,7 @@ export default {
             scoreMapper[responseMapper[a['@index']].ref] = val;
           }
         });
+        console.log(228, 'scoremap', scoreMapper);
         return scoreMapper;
       }
       return {};

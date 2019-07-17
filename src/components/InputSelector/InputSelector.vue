@@ -4,7 +4,7 @@
       <p :class="{'text-justify': inputType==='audioPassageRecord'}">{{ preamble }}</p>
     </div>
     <div class="lead scroll mb-3 pr-3 pl-3" v-if="title">
-      <p :class="{'text-justify': inputType==='audioPassageRecord'}">{{ title }}</p>
+      <p :class="{'text-justify': inputType==='audioPassageRecord'}" v-html="title">{{ title }}</p>
       <span v-if="valueConstraints.requiredValue" class="text-danger">*</span>
     </div>
 

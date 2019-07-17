@@ -149,6 +149,7 @@ export default {
       }
     },
     saveResponse(key, value) {
+      console.log(152, key, value);
       let needsVizUpdate = false;
       if (this.currentResponse[key] !== value && this.progress[this.activityIndex] === 100) {
         // there has been a change in an already completed activity
@@ -163,7 +164,7 @@ export default {
       this.isAnswered = true;
     },
     saveScores(key, scoreObj) {
-      // console.log(168, key, scoreObj);
+      console.log(168, key, scoreObj);
       this.$store.dispatch('saveScores', { key, scoreObj });
     },
     clearResponses() {
@@ -204,6 +205,7 @@ export default {
         if (this.visibility[index] == null || this.visibility[index] === undefined) {
           // if there is a request and it hasn't been run yet, then
           // default to false
+          console.log(208, 'default false vis');
           this.visibility[index] = false;
         }
         // console.log('making request', request, 'cache', this.cache);
@@ -384,6 +386,7 @@ export default {
           // and reformat nicely
 
           let condition = _.filter(this.schema['https://schema.repronim.org/visibility'], c => c['@index'] === keyName);
+          console.log(38, this.schema, condition);
           if (condition.length === 1) {
             condition = condition[0];
 

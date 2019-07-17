@@ -47,6 +47,16 @@
               may find some of the activities tiring and seeing your data may be stressful.</p>
           </div>
         </div>
+        <div class="screen" v-show="step === 5">
+          <div class="panel">
+            <BridgeImage src="/static/images/mit_voice_pilot_applet_image.svg"/>
+            <h3>Let's get started</h3>
+            <p>Now that you’ve learned the basics of mPower, we will provide you with a bit more
+              detail so you can decide if mPower is right for you.</p>
+
+            <p>First, let’s see if you’re eligible for the mPower study!</p>
+          </div>
+        </div>
       </div>
     </section>
     <div class="buttons">
@@ -63,7 +73,7 @@ export default {
   data() {
     return {
       step: 1,
-      totalSteps: 4,
+      totalSteps: 5,
     };
   },
   computed: {
