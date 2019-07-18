@@ -133,6 +133,14 @@
         :init="init" v-on:valueChanged="sendData"/>
     </div>
 
+    <div v-else-if="inputType ==='save'">
+      <SaveData
+        :constraints="valueConstraints"
+        :selected_language="selected_language"
+        :result="true"
+        :init="init" v-on:valueChanged="sendData"/>
+    </div>
+
     <!-- if we don't have a component built for this type, then show an error -->
     <div v-else>
       <b-alert show>
@@ -168,6 +176,7 @@ import TimeRange from '../Inputs/TimeRange';
 import SelectInput from '../Inputs/SelectInput';
 import AudioCheckRecord from '../Inputs/AudioCheckRecord';
 import StaticReadOnly from '../Inputs/StaticReadOnly';
+import SaveData from '../Inputs/SaveData/SaveData';
 
 
 export default {
@@ -199,6 +208,7 @@ export default {
     },
   },
   components: {
+    SaveData,
     Radio,
     AudioRecord,
     TextInput,

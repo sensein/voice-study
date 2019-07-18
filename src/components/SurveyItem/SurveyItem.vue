@@ -222,6 +222,7 @@ export default {
         });
     },
     getData() {
+      console.log(225, this.item['@id']);
       jsonld.expand(this.item['@id'], {
         onDownloadProgress() {
           // TODO: for some reason pEvent has total defined as 0.
