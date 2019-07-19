@@ -288,14 +288,15 @@ export default {
       });
       jszip.generateAsync({ type: 'blob' })
         .then((myzipfile) => {
-          axios.post('http://localhost:8000/check', JSONscores[0], {
+          saveAs(myzipfile, 'study-data.zip');
+          axios.post('https://sig.mit.edu/vb/check', JSONscores[0], {
             ContentType: 'application/json',
           })
             .then((response) => {
               const formData = new FormData();
               formData.append('file', myzipfile);
               formData.append('token', response.data.token);
-              axios.post('http://localhost:8000/submit', formData, {
+              axios.post('https://sig.mit.edu/vb/submit', formData, {
                 'Content-Type': 'multipart/form-data',
               }).then((res) => {
                 console.log('SUCCESS!!', res);
