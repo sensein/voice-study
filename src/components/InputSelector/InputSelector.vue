@@ -1,10 +1,10 @@
 <template>
   <div class="inputContent">
     <div class="lead scroll mb-3 pr-3 pl-3" v-if="preamble">
-      <p :class="{'text-justify': inputType==='audioPassageRecord'}">{{ preamble }}</p>
+      <p :class="{'text-justify': inputType==='audioPassageRecord'}" v-html="preamble">{{ preamble }}</p>
     </div>
     <div class="lead scroll mb-3 pr-3 pl-3" v-if="title">
-      <p :class="{'text-justify': inputType==='audioPassageRecord'}">{{ title }}</p>
+      <p :class="{'text-justify': inputType==='audioPassageRecord'}" v-html="title">{{ title }}</p>
       <span v-if="valueConstraints.requiredValue" class="text-danger">*</span>
     </div>
 
@@ -141,6 +141,14 @@
         :init="init" v-on:valueChanged="sendData"/>
     </div>
 
+    <div v-else-if="inputType ==='sign'">
+      <StudySign
+        :constraints="valueConstraints"
+        :selected_language="selected_language"
+        :result="true"
+        :init="init" v-on:valueChanged="sendData"/>
+    </div>
+
     <!-- if we don't have a component built for this type, then show an error -->
     <div v-else>
       <b-alert show>
@@ -177,6 +185,7 @@ import SelectInput from '../Inputs/SelectInput';
 import AudioCheckRecord from '../Inputs/AudioCheckRecord';
 import StaticReadOnly from '../Inputs/StaticReadOnly';
 import SaveData from '../Inputs/SaveData/SaveData';
+import StudySign from '../StudySign/StudySign';
 
 
 export default {
@@ -208,6 +217,7 @@ export default {
     },
   },
   components: {
+    StudySign,
     SaveData,
     Radio,
     AudioRecord,
