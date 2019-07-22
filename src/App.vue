@@ -47,7 +47,7 @@
                           class="btn">
                       <span class="navbar-toggler-icon"></span>
                   </button>
-                  </b-navbar-nav>
+                </b-navbar-nav>
 
                   <b-navbar-nav class="float-right">
                     <b-nav-item :to="{name: 'Landing', query: $route.query}" exact>Home</b-nav-item>
@@ -289,30 +289,7 @@ export default {
       jszip.generateAsync({ type: 'blob' })
         .then((myzipfile) => {
           saveAs(myzipfile, 'study-data.zip');
-          axios.post('https://sig.mit.edu/vb/check', JSONscores[0], {
-            ContentType: 'application/json',
-          })
-            .then((response) => {
-              const formData = new FormData();
-              formData.append('file', myzipfile);
-              formData.append('token', response.data.token);
-              axios.post('https://sig.mit.edu/vb/submit', formData, {
-                'Content-Type': 'multipart/form-data',
-              }).then((res) => {
-                console.log('SUCCESS!!', res);
-              })
-                .catch(() => {
-                  console.log('FAILURE!!');
-                });
-            })
-            .catch((error) => {
-              console.log(error);
-            });
         });
-
-      // .then((content) => {
-      //   saveAs(content, 'study-data.zip');
-      // });
     },
   },
   watch: {

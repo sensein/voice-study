@@ -137,7 +137,6 @@
       <SaveData
         :constraints="valueConstraints"
         :selected_language="selected_language"
-        :result="true"
         :init="init" v-on:valueChanged="sendData"/>
     </div>
 

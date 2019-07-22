@@ -2,9 +2,6 @@
   <div>
     <b-alert :show="!supported">Oh no, your browser doesn't support audio</b-alert>
     <div v-if="supported">
-      <div v-if="mode==='audioImageRecord'" class="mb-3">
-        <img class="img-fluid" :src="constraints['http://schema.org/image'][0]['@value']" />
-      </div>
       <div v-if="mode==='audioRecordNumberTask'" class="mb-3">
         <strong style="font-size:30px">{{ generateNumber }}</strong>
       </div>
@@ -18,6 +15,9 @@
       <b-button variant="success" v-if="hasRecording && !isPlaying" @click="play" ref="play">
         <span> play </span>
       </b-button>
+      <div v-if="mode==='audioImageRecord'" class="mb-3">
+        <img class="img-fluid" :src="constraints['http://schema.org/image'][0]['@value']" />
+      </div>
 
       <b-button variant="secondary"
       v-if="hasRecording && isPlaying" @click="pause" ref="play">
