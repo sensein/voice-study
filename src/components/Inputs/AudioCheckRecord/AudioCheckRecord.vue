@@ -88,7 +88,7 @@ export default {
           .then((stream) => {
             this.mediaRecorder = new MediaStreamRecorder(stream);
             this.mediaRecorder.mimeType = 'audio/wav'; // check this line for audio/wav
-            this.timeRemaining = 10000 / 1000; // 10 secs
+            this.timeRemaining = this.recordingTime / 1000;
             window.mediaRecorder = this.mediaRecorder;
             const self = this;
             this.mediaRecorder.ondataavailable = (e) => {
@@ -97,7 +97,7 @@ export default {
               self.recording.blob = e;
               self.stop();
             };
-            this.mediaRecorder.start(10000);
+            this.mediaRecorder.start(this.recordingTime);
             this.interval = setInterval(this.countdown, 1000);
 
             // check audio level
@@ -156,6 +156,11 @@ export default {
       e.preventDefault();
       this.hasRecording = false;
       this.isRecording = false;
+    },
+  },
+  computed: {
+    recordingTime() {
+      return this.constraints['http://schema.org/maxValue'][0]['@value'];
     },
   },
   watch: {
