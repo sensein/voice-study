@@ -312,7 +312,7 @@ export default {
   },
   created() {
     const url = this.$route.query.url;
-    console.log(315, 'url is', url);
+    // console.log('url is', url);
     this.$store.dispatch('getBaseSchema', url);
   },
   mounted() {
@@ -322,7 +322,6 @@ export default {
   },
   computed: {
     srcUrl() {
-      console.log(this.$store.getters.srcUrl);
       return this.$store.getters.srcUrl;
     },
     schema() {
