@@ -27,11 +27,10 @@
       <Loader />
     </div>
     <div v-else>
-      <transition name="list" tag="div" mode="in-out">
-        <div v-if="progress === 100" class="mt-3 mb-3">
-          <slot></slot>
-        </div>
-      </transition>
+      <div v-if="complete">
+        <div class="mt-3 mb-3">Please review your responses, then click "Next" below:</div>
+        <b-button @click="nextActivity">Next</b-button>
+      </div>
       <b-progress :value="progress" :max="100" class="mb-3"></b-progress>
       <div v-if="preambleText" class="preamble-text">
         <strong> {{ preambleText }} </strong>
@@ -322,6 +321,12 @@ export default {
         return newList;
       } return this.activity['https://schema.repronim.org/order'][0]['@list'];
     },
+    nextActivity() {
+      const currentIndex = parseInt(this.$store.state.activityIndex);
+      console.log(36, currentIndex + 1);
+      const nextIndex = currentIndex + 1;
+      this.$router.push(`/activities/${nextIndex}`);
+    },
   },
   watch: {
     $route() {
@@ -357,6 +362,9 @@ export default {
     },
   },
   computed: {
+    complete() {
+      return this.progress === 100;
+    },
     storeContext() {
       if (this.$store) {
         const state = this.$store.state;
@@ -432,7 +440,7 @@ export default {
         };
       }
       else return null;
-    }
+    },
   },
   mounted() {
     if (this.srcUrl) {
