@@ -30,7 +30,7 @@
             </li>
         </ul>
         <div>
-          <b-button class="align-middle" @click="downloadZipData"
+          <b-button v-if="allowExport" class="align-middle" @click="downloadZipData"
                     :disabled="!isAnswered">Export</b-button>
         </div>
       </nav>
@@ -312,7 +312,7 @@ export default {
   },
   created() {
     const url = this.$route.query.url;
-    // console.log('url is', url);
+    console.log(315, 'url is', url);
     this.$store.dispatch('getBaseSchema', url);
   },
   mounted() {
@@ -322,6 +322,7 @@ export default {
   },
   computed: {
     srcUrl() {
+      console.log(this.$store.getters.srcUrl);
       return this.$store.getters.srcUrl;
     },
     schema() {
@@ -352,6 +353,15 @@ export default {
         return order;
       }
       return [];
+    },
+    allowExport() {
+      if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema['https://schema.repronim.org/allow']) {
+        // console.log(351, this.$store.state.schema['https://schema.repronim.org/allow'][0]['@list']);
+        const allowList = _.map(this.$store.state.schema['https://schema.repronim.org/allow'][0]['@list'],
+          u => u['@id']);
+        return allowList.includes('https://schema.repronim.org/allow_export');
+      }
+      return false;
     },
     schemaNameMapper() {
       const output = {};
