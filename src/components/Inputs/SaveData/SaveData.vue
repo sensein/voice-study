@@ -91,7 +91,6 @@ export default {
       });
       jszip.generateAsync({ type: 'blob' })
         .then((myzipfile) => {
-          // saveAs(myzipfile, 'study-data.zip');
           // axios.post('http://localhost:8000/check', JSONscores[0], {
           axios.post('https://sig.mit.edu/vb/check', JSONscores[0], {
             ContentType: 'application/json',
@@ -105,6 +104,7 @@ export default {
                 'Content-Type': 'multipart/form-data',
               }).then((res) => {
                 console.log('SUCCESS!!', res);
+                this.$emit('valueChanged', 'success');
               })
                 .catch(() => {
                   console.log('FAILURE!!');
@@ -114,10 +114,6 @@ export default {
               console.log(error);
             });
         });
-
-      // .then((content) => {
-      //   saveAs(content, 'study-data.zip');
-      // });
     },
   },
 };

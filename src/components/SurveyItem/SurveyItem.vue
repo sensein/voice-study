@@ -120,6 +120,9 @@ export default {
     showPassOptions: {
       type: Object,
     },
+    surveyStart: {
+      type: Number,
+    },
   },
   components: {
     InputSelector,

@@ -210,10 +210,24 @@ export default {
         return criteria1 && criteria2;
       });
     },
-    setResponse(value, index) {
-      this.$emit('saveResponse', this.context[index]['@id'], value);
+    setResponse(val, index) {
+      const t1 = performance.now();
+      const respData = { startedAt: this.t0 / 1000,
+        recordedAt: t1 / 1000,
+        value: val };
+      console.log(219, 'survey resp', respData);
+      this.$emit('saveResponse', this.context[index]['@id'], respData);
+      this.t0 = t1;
       const currResponses = { ...this.responses };
-      currResponses[this.context[index]['@id']] = value;
+      console.log(224, 'curr resp', currResponses);
+      console.log(225, 'this resp', this.responses);
+      if (val instanceof Object) {
+        console.log(225, respData.value);
+        currResponses[this.context[index]['@id']] = respData.value;
+      } else {
+        currResponses[this.context[index]['@id']] = val;
+        console.log(229);
+      }
       this.visibility = this.getVisibility(currResponses);
       if (!_.isEmpty(this.activity['https://schema.repronim.org/scoringLogic'])) {
         // TODO: if you uncomment the scoring logic evaluation, things break w/ multipart.
@@ -286,6 +300,7 @@ export default {
       return outMapper;
     },
     getVisibility(responses) {
+      // console.log(299, 'vis resp', responses);
       const responseMapper = this.responseMapper(responses);
       if (!_.isEmpty(this.activity['https://schema.repronim.org/visibility'])) {
         const visibilityMapper = {};
@@ -439,6 +454,8 @@ export default {
       // eslint-disable-next-line
       this.getData();
     }
+    this.t0 = performance.now();
+    console.log(424, 'start of survey', this.t0);
   },
 };
 </script>
