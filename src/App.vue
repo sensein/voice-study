@@ -59,6 +59,7 @@
               :srcUrl="srcUrl" :responses="responses[activityIndex]"
               :selected_language="selected_language"
               :progress="progress[activityIndex]"
+              :autoAdvance="checkAdvance"
               v-on:updateProgress="updateProgress"
               v-on:saveResponse="saveResponse"
               v-on:saveScores="saveScores"
@@ -428,6 +429,14 @@ export default {
       }
       // return all true's:
       return _.mapValues(this.schemaOrder, () => true);
+    },
+    checkAdvance() {
+      if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema['https://schema.repronim.org/allow']) {
+        const allowList = _.map(this.$store.state.schema['https://schema.repronim.org/allow'][0]['@list'],
+          u => u['@id']);
+        return allowList.includes('https://schema.repronim.org/auto_advance');
+      }
+      return false;
     },
   },
 };
