@@ -1,46 +1,58 @@
 <template>
-  <div class="textInput">
-    <!--<b-button v-if="!isRecording && !hasRecording" @click="record" variant="danger">-->
-      <!--record-->
-    <!--</b-button>-->
-    <!--<div v-if="isRecording">-->
-      <!--<small>{{timeRemaining}} seconds left</small>-->
-    <!--</div>-->
-    <b-button class="align-middle" @click="uploadZipData"
-              >Upload</b-button>
-    <!--<b-form @submit="onSubmit">-->
-      <!--<b-btn type="submit">Upload</b-btn>-->
-    <!--</b-form>-->
+  <div class="SaveData ml-3 mr-3 pl-3 pr-3">
+    <b-button v-if="!isUploading && !hasRecording" @click="record" variant="danger">
+      Upload
+    </b-button>
+    <div v-if="isUploading" class="loader">
+      <Loader />
+    </div>
+    <div style="width:800px; margin:0 auto;" v-bind:class="{ done: hasRecording}"></div>
   </div>
 </template>
 
 <style>
+  .done {
+    background: transparent url(/static/images/done.svg) center no-repeat;
+    background-size: contain;
+    width: 1.6rem;
+    height: 1.6rem;
+  }
 </style>
 
 <script>
 import _ from 'lodash';
 import JSZip from 'jszip';
 import axios from 'axios';
+import Loader from '../../Loader/';
 
 export default {
   name: 'SaveData',
   props: ['constraints', 'init', 'selected_language'],
+  components: {
+    Loader,
+  },
   data() {
     return {
-      input: '',
+      recording: {},
+      isUploading: false,
+      hasRecording: false,
+      audioCtx: {},
+      audioConstraints: { audio: true, video: false },
+      // chunks: [],
+      supported: null,
+      interval: {},
+      timeRemaining: null,
+      isPlaying: false,
     };
   },
   computed: {
-    showResult() {
-      if (this.result) {
-        this.$emit('valueChanged', this.result);
-        return 'Success';
-      } return 'Fail';
-    },
   },
   methods: {
+    record() {
+      this.isUploading = true;
+      this.uploadZipData();
+    },
     uploadZipData() {
-      console.log('26, responses', this.$store.state.responses);
       const Response = this.$store.state.responses;
       const totalScores = this.$store.state.scores;
       const totalResponse = { response: Response, scores: totalScores };
@@ -104,7 +116,10 @@ export default {
               axios.post('https://sig.mit.edu/vb/submit', formData, {
                 'Content-Type': 'multipart/form-data',
               }).then((res) => {
-                console.log('SUCCESS!!', res);
+                this.hasRecording = true;
+                this.isUploading = false;
+                this.$emit('valueChanged', { status: res.status });
+                // console.log('SUCCESS!!', res.status);
               })
                 .catch(() => {
                   console.log('FAILURE!!');
@@ -114,10 +129,6 @@ export default {
               console.log(error);
             });
         });
-
-      // .then((content) => {
-      //   saveAs(content, 'study-data.zip');
-      // });
     },
   },
 };
