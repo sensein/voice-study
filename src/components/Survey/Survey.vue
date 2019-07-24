@@ -29,7 +29,7 @@
     <div v-else>
       <div v-if="this.autoAdvance && complete">
         <div class="mt-3 mb-3">Please review your responses, then click "Next" below:</div>
-        <b-button @click="nextActivity">Next</b-button>
+        <b-button v-if="nextActivity[activityUrl]" @click="nextActivity1">Next</b-button>
       </div>
       <b-progress :value="progress" :max="100" class="mb-3"></b-progress>
       <div v-if="preambleText" class="preamble-text">
@@ -97,7 +97,7 @@ const safeEval = require('safe-eval');
 
 export default {
   name: 'Survey',
-  props: ['srcUrl', 'responses', 'selected_language', 'progress', 'autoAdvance'],
+  props: ['srcUrl', 'responses', 'selected_language', 'progress', 'autoAdvance', 'actVisibility', 'nextActivity'],
   data() {
     return {
       activity: {},
@@ -321,11 +321,12 @@ export default {
         return newList;
       } return this.activity['https://schema.repronim.org/order'][0]['@list'];
     },
-    nextActivity() {
+    nextActivity1() {
       const currentIndex = parseInt(this.$store.state.activityIndex);
-      console.log(36, currentIndex + 1);
       const nextIndex = currentIndex + 1;
-      this.$router.push(`/activities/${nextIndex}`);
+      if (this.actVisibility[nextIndex]) {
+        this.$router.push(`/activities/${nextIndex}`);
+      }
     },
   },
   watch: {
@@ -440,6 +441,9 @@ export default {
         };
       }
       else return null;
+    },
+    activityUrl() {
+      return this.srcUrl;
     },
   },
   mounted() {

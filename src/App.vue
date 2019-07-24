@@ -60,6 +60,8 @@
               :selected_language="selected_language"
               :progress="progress[activityIndex]"
               :autoAdvance="checkAdvance"
+              :actVisibility="visibility"
+              :nextActivity="nextActivity"
               v-on:updateProgress="updateProgress"
               v-on:saveResponse="saveResponse"
               v-on:saveScores="saveScores"
@@ -437,6 +439,13 @@ export default {
         return allowList.includes('https://schema.repronim.org/auto_advance');
       }
       return false;
+    },
+    nextActivity() {
+      const nextObj = {};
+      for (let i = 0; i < this.schemaOrder.length - 1; i += 1) {
+        nextObj[this.schemaOrder[i]] = this.schemaOrder[i + 1];
+      }
+      return nextObj;
     },
   },
 };
