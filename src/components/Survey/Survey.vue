@@ -1,40 +1,19 @@
 <template>
   <div class="hello">
-    <!--<div class="mb-3">-->
-      <!--<div>-->
-        <!--<div class="mb-3">Please review your responses, then click "Save" to proceed</div>-->
-        <!--&lt;!&ndash;<b-alert :show="error.show" variant="danger">&ndash;&gt;-->
-          <!--&lt;!&ndash;Oh no! <span v-if="error.error">{{error.error.message}}</span>&ndash;&gt;-->
-        <!--&lt;!&ndash;</b-alert>&ndash;&gt;-->
-        <!--&lt;!&ndash;<save-button variant="success" label="save" :ready="saveReady" :click="sendData"/>&ndash;&gt;-->
-      <!--</div>-->
-      <!--<div>-->
-        <!--<div class="mt-3 mb-3">-->
-          <!--<p class="lead"> Thanks! </p>-->
-        <!--</div>-->
-        <!--<b-button v-if="nextActivity[srcUrl]" size="lg" variant="info"-->
-                  <!--:to="{name: 'Home', params: {id: nextActivity[srcUrl]}}">-->
-          <!--Next-->
-        <!--</b-button>-->
-        <!--<b-button v-else size="lg" variant="secondary"-->
-                  <!--:to="{name: 'Landing'}">-->
-          <!--Back to home page-->
-        <!--</b-button>-->
-      <!--</div>-->
-    <!--</div>-->
     <div v-if="!listShow.length">
       <h1 >Loading...</h1>
       <Loader />
     </div>
     <div v-else>
-      <div v-if="this.autoAdvance && complete">
+      <div v-if="checkActivityVisibility && this.autoAdvance && complete">
         <p v-if="currentActivityIndex === 0">
           Great, you are eligible for the voice study! Hit "Next" to learn about the study, risks,
           and benefits of joining.</p>
         <p v-else-if="currentActivityIndex === 1">
           Thanks for walking through the consent. You have agreed to the study, let’s get started.
         </p>
-        <p v-else-if="currentActivityIndex !== 9">Please review your responses, then click "Next" below:</p>
+        <p v-else-if="currentActivityIndex !== 9">
+          Please review your responses, then click "Next" below:</p>
         <!--<div class="mt-3 mb-3">Please review your responses, then click "Next" below:</div>-->
         <b-button v-if="nextActivity[activityUrl]" @click="nextActivity1">Next</b-button>
       </div>
@@ -335,6 +314,12 @@ export default {
       if (this.actVisibility[nextIndex]) {
         this.$router.push(`/activities/${nextIndex}`);
       }
+    },
+    checkActivityVisibility() {
+      const arr = Object.values(this.actVisibility);
+      arr.shift();
+      console.log(33, arr, _.some(arr));
+      return _.some(arr);
     },
   },
   watch: {
