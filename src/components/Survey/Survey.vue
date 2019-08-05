@@ -5,7 +5,7 @@
       <Loader />
     </div>
     <div v-else>
-      <div v-if="checkActivityVisibility && this.autoAdvance && complete">
+      <div v-if="checkActivityVisibility && autoAdvance && complete">
         <p v-if="currentActivityIndex === 0">
           Great, you are eligible for the voice study! Hit "Next" to learn about the study, risks,
           and benefits of joining.</p>
@@ -315,12 +315,7 @@ export default {
         this.$router.push(`/activities/${nextIndex}`);
       }
     },
-    checkActivityVisibility() {
-      const arr = Object.values(this.actVisibility);
-      arr.shift();
-      console.log(33, arr, _.some(arr));
-      return _.some(arr);
-    },
+
   },
   watch: {
     $route() {
@@ -356,6 +351,12 @@ export default {
     },
   },
   computed: {
+    checkActivityVisibility() {
+      const arr = Object.values(this.actVisibility);
+      arr.shift();
+      console.log(33, arr, _.some(arr));
+      return _.some(arr);
+    },
     complete() {
       return this.progress === 100;
     },
