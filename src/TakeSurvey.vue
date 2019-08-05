@@ -21,6 +21,9 @@ import Survey from './components/Survey';
 
 export default {
     name: 'TakeSurvey',
+    //props: remember to pass all of the props from App.vue into our
+    // survey component. Also remember to pass on any events that Survey emits
+    // to App.vue
     components: {
         Survey,
     },
@@ -28,7 +31,9 @@ export default {
 
     },
     methods: {
-
+        updateProgress(args_from_survey) {
+            this.$emit('updateProgress', args_from_survey);
+        }
     }
 }
 </script>
