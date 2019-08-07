@@ -7,10 +7,12 @@
             <BridgeImage src="/static/images/about%20the%20study.svg"/>
 
             <h3>About the study</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eu sagittis leo,
-              sit amet consectetur mi. Donec volutpat rutrum massa et luctus.
-              Fusce ac dui quam. Nam a nibh porttitor, tincidunt libero id, condimentum velit.
-              Praesent ultricies consectetur nulla vel pharetra.
+            <p>Researchers at MIT and the University of Washington are currently seeking volunteers
+              to participate in a study investigating how voice changes are related to your mental
+              health state. Specifically, we want to study how your voice changes in response to
+              your mental health state and need to collect voice recordings of many people across
+              varying levels of depression, so that we can understand this relationship better.
+              We need your help in order to collect this data. This is a fully remote online study.
             </p>
           </div>
         </div>
@@ -19,11 +21,12 @@
             <BridgeImage src="/static/images/procedures%20activities.svg"/>
             <h3>How does the study work?</h3>
             <p>
-              1. Answer questions to determine if you are eligible for this study <br>
-              2. Complete the informed consent process & download the app<br>
-              3. Complete a one-time health survey<br>
-              4. Complete short physical and cognitive activities <br>
-              5. Track your symptoms, triggers, and medications
+              1. Take the screening test to determine if you are eligible for the study <br>
+              2. Complete the informed consent process<br>
+              3. Complete a demographics questionnaire and surveys related to your mood and health.
+              <br>
+              4. Additionally, you will be asked to provide audio recordings of multiple voice tasks
+              and will be required to have a working microphone for these tasks. <br>
             </p>
           </div>
         </div>
@@ -31,20 +34,19 @@
           <div class="panel">
             <BridgeImage src="/static/images/how%20long%20does%20it%20last.svg"/>
             <h3>How long does it last?</h3>
-            <p>We will ask you to participate for 2 weeks every three months.
-              We would like you to participate for 2 years, but you can participate
-              as long as you like.</p>
+            <p>The study is expected to take no more than 15 minutes to complete. You may decline to
+              answer any question and may withdraw from the study at any time with no penalty.</p>
           </div>
         </div>
         <div class="screen" v-show="step === 4">
           <div class="panel">
             <BridgeImage src="/static/images/benefits%20and%20risks.svg"/>
             <h3>What are the benefits and risks?</h3>
-            <p>You may not directly benefit from taking part but seeing trends in your data
-              may be interesting to you. You may help researchers better understand PD.</p>
+            <p>You may not directly benefit from participating in the study but seeing trends in
+              your data may be interesting to you.</p>
 
-            <p>The main risk is to your privacy by an accidental release of your data. You
-              may find some of the activities tiring and seeing your data may be stressful.</p>
+            <p>You will also be helping researchers advance the current understanding of depression
+              treatment.</p>
           </div>
         </div>
         <div class="screen" v-show="step === 5">
