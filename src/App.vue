@@ -60,7 +60,7 @@
               :selected_language="selected_language"
               :progress="progress[activityIndex]"
               :autoAdvance="checkAdvance"
-              :actVisibility="visibility"
+              :actVisibility="Object.values(visibility)"
               :nextActivity="nextActivity"
               v-on:updateProgress="updateProgress"
               v-on:saveResponse="saveResponse"
