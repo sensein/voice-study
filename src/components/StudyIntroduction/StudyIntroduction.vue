@@ -23,10 +23,10 @@
             <p>
               1. Take the screening test to determine if you are eligible for the study <br>
               2. Complete the informed consent process<br>
-              3. Complete a demographics questionnaire and surveys related to your mood and health.
-              <br>
-              4. Additionally, you will be asked to provide audio recordings of multiple voice tasks
+              3. You will be asked to provide audio recordings of multiple voice tasks
               and will be required to have a working microphone for these tasks. <br>
+              4. Complete a demographics questionnaire and surveys related to your mood and health.
+              <br>
             </p>
           </div>
         </div>
@@ -42,8 +42,8 @@
           <div class="panel">
             <BridgeImage src="/static/images/benefits%20and%20risks.svg"/>
             <h3>What are the benefits and risks?</h3>
-            <p>You may not directly benefit from participating in the study but seeing trends in
-              your data may be interesting to you.</p>
+            <p>You may not directly benefit from participating in the study but your data may be
+              interesting to you.</p>
 
             <p>You will also be helping researchers advance the current understanding of depression
               treatment.</p>
