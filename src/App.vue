@@ -68,7 +68,9 @@
               v-on:clearResponses="clearResponses"
             />
           </b-container>
+        <Footer/>
       </div>
+
     </div>
   </div>
 </template>
@@ -84,6 +86,7 @@ import { saveAs } from 'file-saver';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import circleProgress from './components/Circle/';
+import Footer from './components/Footer/';
 
 Vue.use(BootstrapVue);
 Vue.filter('reverse', value => value.slice().reverse());
@@ -111,6 +114,7 @@ export default {
   name: 'App',
   components: {
     circleProgress,
+    Footer,
   },
   data() {
     return {
