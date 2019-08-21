@@ -22,6 +22,10 @@ footer {
   font-size: .6rem;
   justify-content: space-around;
   padding: .25rem .75rem .5rem .75rem;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
 }
 footer > div {
   display: flex;
