@@ -58,6 +58,7 @@
             <router-view
               :srcUrl="srcUrl" :responses="responses[activityIndex]"
               :selected_language="selected_language"
+              :ipAddress="clientIp"
               :progress="progress[activityIndex]"
               :autoAdvance="checkAdvance"
               :actVisibility="Object.values(visibility)"
@@ -123,6 +124,7 @@ export default {
       visibility: {},
       cache: {},
       isAnswered: false,
+      clientIp: '',
       // responses: [],
     };
   },
@@ -323,6 +325,11 @@ export default {
     this.$store.dispatch('getBaseSchema', url);
   },
   mounted() {
+    // `http://api.ipstack.com/check?access_key=${accessKey}&hostname=1`
+    axios.get('https://api.muctool.de/whois').then((resp) => {
+      console.log(32, resp.data.ip);
+      this.clientIp = resp.data.ip;
+    });
     if (this.$route.params.id) {
       this.$store.dispatch('setActivityIndex', this.$route.params.id);
     }

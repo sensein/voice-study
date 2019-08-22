@@ -44,6 +44,7 @@
             v-on:setScores="setScore"
             :responses="responses"
             :selected_language="selected_language"
+            :clientIp="ipAddress"
             :showPassOptions="findPassOptions"
             :score="score"
           />
@@ -89,7 +90,7 @@ const safeEval = require('safe-eval');
 
 export default {
   name: 'Survey',
-  props: ['srcUrl', 'responses', 'selected_language', 'progress', 'autoAdvance', 'actVisibility', 'nextActivity'],
+  props: ['srcUrl', 'responses', 'selected_language', 'progress', 'autoAdvance', 'actVisibility', 'nextActivity', 'ipAddress'],
   data() {
     return {
       activity: {},

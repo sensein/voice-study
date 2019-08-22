@@ -138,6 +138,7 @@
       <SaveData
         :constraints="valueConstraints"
         :selected_language="selected_language"
+        :ipAddress="ipAddress"
         :init="init" v-on:valueChanged="sendData"/>
     </div>
 
@@ -213,6 +214,9 @@ export default {
       type: Object,
     },
     preamble: {
+      type: String,
+    },
+    ipAddress: {
       type: String,
     },
   },

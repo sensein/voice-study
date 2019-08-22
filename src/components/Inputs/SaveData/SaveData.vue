@@ -1,12 +1,12 @@
 <template>
   <div class="SaveData ml-3 mr-3 pl-3 pr-3">
-    <b-button v-if="!isUploading && !hasRecording" @click="record" variant="danger">
+    <b-button v-if="!isUploading && !hasData" @click="record" variant="danger">
       Upload
     </b-button>
     <div v-if="isUploading" class="loader">
       <Loader />
     </div>
-    <div style="width:800px; margin:0 auto;" v-bind:class="{ done: hasRecording}"></div>
+    <div style="width:800px; margin:0 auto;" v-bind:class="{ done: hasData}"></div>
   </div>
 </template>
 
@@ -27,7 +27,7 @@ import Loader from '../../Loader/';
 
 export default {
   name: 'SaveData',
-  props: ['constraints', 'init', 'selected_language'],
+  props: ['constraints', 'init', 'selected_language', 'ipAddress'],
   components: {
     Loader,
   },
@@ -35,7 +35,7 @@ export default {
     return {
       recording: {},
       isUploading: false,
-      hasRecording: false,
+      hasData: false,
       audioCtx: {},
       audioConstraints: { audio: true, video: false },
       // chunks: [],
@@ -104,19 +104,20 @@ export default {
       jszip.generateAsync({ type: 'blob' })
         .then((myzipfile) => {
           // saveAs(myzipfile, 'study-data.zip');
-          // axios.post('http://localhost:8000/check', JSONscores[0], {
-          axios.post('https://sig.mit.edu/vb/check', JSONscores[0], {
+          axios.post('http://localhost:8000/check', JSONscores[0], {
+          // axios.post('https://sig.mit.edu/vb/check', JSONscores[0], {
             ContentType: 'application/json',
           })
             .then((response) => {
               const formData = new FormData();
               formData.append('file', myzipfile);
               formData.append('token', response.data.token);
-              // axios.post('http://localhost:8000/submit', formData, {
-              axios.post('https://sig.mit.edu/vb/submit', formData, {
+              formData.append('clientIP', this.ipAddress);
+              axios.post('http://localhost:8000/submit', formData, {
+              // axios.post('https://sig.mit.edu/vb/submit', formData, {
                 'Content-Type': 'multipart/form-data',
               }).then((res) => {
-                this.hasRecording = true;
+                this.hasData = true;
                 this.isUploading = false;
                 this.$emit('valueChanged', { status: res.status });
                 // console.log('SUCCESS!!', res.status);
