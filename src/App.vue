@@ -327,7 +327,6 @@ export default {
   mounted() {
     // `http://api.ipstack.com/check?access_key=${accessKey}&hostname=1`
     axios.get('https://api.muctool.de/whois').then((resp) => {
-      console.log(32, resp.data.ip);
       this.clientIp = resp.data.ip;
     });
     if (this.$route.params.id) {
