@@ -22,11 +22,10 @@ footer {
   font-size: 2rem;
   justify-content: space-around;
   padding: .25rem .75rem .25rem .75rem;
-  position: fixed;
+  position: relative;
   left: 0;
   bottom: 0;
   width: 100%;
-  text-align: center;
 }
 
 

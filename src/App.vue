@@ -34,44 +34,42 @@
                     :disabled="!isAnswered">Export</b-button>
         </div>
       </nav>
-
       <!-- Page Content -->
-      <div id="content">
-          <!-- We'll fill this with dummy content -->
-          <nav class="navbar navbar-expand-lg navbar-light bg-light">
-              <div class="container-fluid">
-                <b-navbar-nav>
-                  <button @click="toggleSidebar"
-                          type="button"
-                          id="sidebarCollapse"
-                          class="btn">
-                      <span class="navbar-toggler-icon"></span>
-                  </button>
-                </b-navbar-nav>
-
-                  <b-navbar-nav class="float-right">
-                    <b-nav-item :to="{name: 'Landing', query: $route.query}" exact>Home</b-nav-item>
-                  </b-navbar-nav>
-              </div>
-          </nav>
-          <b-container>
-            <router-view
-              :srcUrl="srcUrl" :responses="responses[activityIndex]"
-              :selected_language="selected_language"
-              :ipAddress="clientIp"
-              :progress="progress[activityIndex]"
-              :autoAdvance="checkAdvance"
-              :actVisibility="Object.values(visibility)"
-              :nextActivity="nextActivity"
-              v-on:updateProgress="updateProgress"
-              v-on:saveResponse="saveResponse"
-              v-on:saveScores="saveScores"
-              v-on:clearResponses="clearResponses"
-            />
-          </b-container>
+      <div id="content" >
+        <!-- We'll fill this with dummy content -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid">
+            <b-navbar-nav>
+              <button @click="toggleSidebar"
+                      type="button"
+                      id="sidebarCollapse"
+                      class="btn">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+            </b-navbar-nav>
+            <b-navbar-nav class="float-right">
+              <b-nav-item :to="{name: 'Landing', query: $route.query}" exact>Home</b-nav-item>
+            </b-navbar-nav>
+          </div>
+        </nav>
+        <b-container>
+          <router-view
+            :srcUrl="srcUrl" :responses="responses[activityIndex]"
+            :selected_language="selected_language"
+            :ipAddress="clientIp"
+            :progress="progress[activityIndex]"
+            :autoAdvance="checkAdvance"
+            :actVisibility="Object.values(visibility)"
+            :nextActivity="nextActivity"
+            v-on:updateProgress="updateProgress"
+            v-on:saveResponse="saveResponse"
+            v-on:saveScores="saveScores"
+            v-on:clearResponses="clearResponses"
+          />
+        </b-container>
+        <div class="spacer"></div>
         <Footer/>
       </div>
-
     </div>
   </div>
 </template>
@@ -472,6 +470,10 @@ export default {
 
 #content {
   width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .wrapper {
@@ -544,5 +546,16 @@ ul ul a {
 
 select > .placeholder {
   display: none;
+}
+
+.spacer {
+  flex: 1;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 </style>
