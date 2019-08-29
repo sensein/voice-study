@@ -134,6 +134,13 @@
         :init="init" v-on:valueChanged="sendData"/>
     </div>
 
+    <div v-else-if="inputType ==='static'">
+      <Static
+        :constraints="valueConstraints"
+        :selected_language="selected_language"
+        :init="init" v-on:valueChanged="sendData"/>
+    </div>
+
     <div v-else-if="inputType ==='save'">
       <SaveData
         :constraints="valueConstraints"
@@ -185,6 +192,7 @@ import TimeRange from '../Inputs/TimeRange';
 import SelectInput from '../Inputs/SelectInput';
 import AudioCheckRecord from '../Inputs/AudioCheckRecord';
 import StaticReadOnly from '../Inputs/StaticReadOnly';
+import Static from '../Inputs/Static';
 import SaveData from '../Inputs/SaveData/SaveData';
 import StudySign from '../StudySign/StudySign';
 
@@ -236,6 +244,7 @@ export default {
     SelectInput,
     AudioCheckRecord,
     StaticReadOnly,
+    Static,
   },
   data() {
     return {
