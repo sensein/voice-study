@@ -60,7 +60,7 @@ Vue.use(VuejsDialog);
 const safeEval = require('safe-eval');
 
 export default {
-  name: 'MultiPart',
+  name: 'Section',
   props: {
     srcUrl: {
       type: String,
@@ -96,6 +96,8 @@ export default {
     if (this.srcUrl) {
       // eslint-disable-next-line
         this.getData();
+      this.t0 = performance.now();
+      // console.log(100, 'start of section', this.t0);
     }
   },
   methods: {
@@ -140,6 +142,7 @@ export default {
         const key = v['https://schema.repronim.org/isAbout'][0]['@id'];
         const qId = v['https://schema.repronim.org/variableName'][0]['@value'];
         const val = responses[key];
+        // console.log(145, 'sec resp key in mapper', val.value);
         return { key, val, qId };
       });
       const outMapper = {};
@@ -188,10 +191,17 @@ export default {
         this.$emit('valueChanged', this.responses);
       }
     },
-    setResponse(value, index) {
-      this.$emit('saveResponse', this.context[index]['@id'], value);
+    setResponse(val, index) {
+      const t1 = performance.now();
+      // console.log(202, 'end of a section-question', index, 'is', t1);
+      const respData = { startedAt: this.t0 / 1000,
+        recordedAt: t1 / 1000,
+        value: val };
+      // console.log(207, 'section resp obj', respData);
+      this.$emit('saveResponse', this.context[index]['@id'], val);
       const currResponses = { ...this.responses };
-      currResponses[this.context[index]['@id']] = value;
+      // console.log(203, currResponses);
+      currResponses[this.context[index]['@id']] = val;
       // TODO: add back branching logic
       this.visibility = this.getVisibility(currResponses);
 
@@ -210,6 +220,7 @@ export default {
       this.$forceUpdate();
     },
     getScoring(responses) {
+      // console.log(222, 'sec resp', responses);
       const responseMapper = this.responseMapper(responses);
       if (!_.isEmpty(this.activity['https://schema.repronim.org/scoringLogic'])) {
         const scoreMapper = {};
