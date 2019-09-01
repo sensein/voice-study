@@ -97,7 +97,7 @@ export default {
       // eslint-disable-next-line
         this.getData();
       this.t0 = performance.now();
-      console.log(100, 'start of section', this.t0);
+      // console.log(100, 'start of section', this.t0);
     }
   },
   methods: {
@@ -200,7 +200,7 @@ export default {
       // console.log(207, 'section resp obj', respData);
       this.$emit('saveResponse', this.context[index]['@id'], val);
       const currResponses = { ...this.responses };
-      console.log(203, currResponses);
+      // console.log(203, currResponses);
       currResponses[this.context[index]['@id']] = val;
       // TODO: add back branching logic
       this.visibility = this.getVisibility(currResponses);
@@ -220,7 +220,7 @@ export default {
       this.$forceUpdate();
     },
     getScoring(responses) {
-      console.log(222, 'sec resp', responses);
+      // console.log(222, 'sec resp', responses);
       const responseMapper = this.responseMapper(responses);
       if (!_.isEmpty(this.activity['https://schema.repronim.org/scoringLogic'])) {
         const scoreMapper = {};
