@@ -1,6 +1,5 @@
 <template>
-  <div class="staticReadOnly">
-    <b-btn @click="onSubmit"> {{ input }} </b-btn>
+  <div class="static">
   </div>
 </template>
 
@@ -9,7 +8,7 @@
 
 <script>
 export default {
-  name: 'StaticReadOnly',
+  name: 'Static',
   props: ['constraints', 'init', 'result', 'selected_language'],
   methods: {
     onSubmit(e) {

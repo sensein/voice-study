@@ -2,7 +2,7 @@
   <div id="app" class="">
     <div class="wrapper">
       <!-- Sidebar -->
-      <nav id="sidebar" ref="sidebar">
+      <nav id="sidebar" class="active" ref="sidebar">
         <div class="sidebar-header">
           <h3>Activities</h3>
         </div>
@@ -15,7 +15,7 @@
         <ul class="list-unstyled components">
             <!-- <p>Dummy Heading</p> -->
             <li v-for="(ui, index) in schemaOrder" :key="index">
-                <a @click="setActivity(index)"
+                <a
                 v-if="visibility[index]"
                 :class="{'current': index==activityIndex}">
                   <circleProgress
@@ -34,37 +34,41 @@
                     :disabled="!isAnswered">Export</b-button>
         </div>
       </nav>
-
       <!-- Page Content -->
-      <div id="content">
-          <!-- We'll fill this with dummy content -->
-          <nav class="navbar navbar-expand-lg navbar-light bg-light">
-              <div class="container-fluid">
-                <b-navbar-nav>
-                  <button @click="toggleSidebar"
-                          type="button"
-                          id="sidebarCollapse"
-                          class="btn">
-                      <span class="navbar-toggler-icon"></span>
-                  </button>
-                </b-navbar-nav>
-
-                  <b-navbar-nav class="float-right">
-                    <b-nav-item :to="{name: 'Landing', query: $route.query}" exact>Home</b-nav-item>
-                  </b-navbar-nav>
-              </div>
-          </nav>
-          <b-container>
-            <router-view
-              :srcUrl="srcUrl" :responses="responses[activityIndex]"
-              :selected_language="selected_language"
-              :progress="progress[activityIndex]"
-              v-on:updateProgress="updateProgress"
-              v-on:saveResponse="saveResponse"
-              v-on:saveScores="saveScores"
-              v-on:clearResponses="clearResponses"
-            />
-          </b-container>
+      <div id="content" >
+        <!-- We'll fill this with dummy content -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid">
+            <b-navbar-nav>
+              <button @click="toggleSidebar"
+                      type="button"
+                      id="sidebarCollapse"
+                      class="btn">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+            </b-navbar-nav>
+            <b-navbar-nav class="float-right">
+              <b-nav-item :to="{name: 'Landing', query: $route.query}" exact>Home</b-nav-item>
+            </b-navbar-nav>
+          </div>
+        </nav>
+        <b-container>
+          <router-view
+            :srcUrl="srcUrl" :responses="responses[activityIndex]"
+            :selected_language="selected_language"
+            :ipAddress="clientIp"
+            :progress="progress[activityIndex]"
+            :autoAdvance="checkAdvance"
+            :actVisibility="Object.values(visibility)"
+            :nextActivity="nextActivity"
+            v-on:updateProgress="updateProgress"
+            v-on:saveResponse="saveResponse"
+            v-on:saveScores="saveScores"
+            v-on:clearResponses="clearResponses"
+          />
+        </b-container>
+        <div class="spacer"></div>
+        <Footer/>
       </div>
     </div>
   </div>
@@ -81,6 +85,7 @@ import { saveAs } from 'file-saver';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import circleProgress from './components/Circle/';
+import Footer from './components/Footer/';
 
 Vue.use(BootstrapVue);
 Vue.filter('reverse', value => value.slice().reverse());
@@ -108,14 +113,16 @@ export default {
   name: 'App',
   components: {
     circleProgress,
+    Footer,
   },
   data() {
     return {
-      sidebarActive: true,
+      sidebarActive: false,
       selected_language: 'en',
       visibility: {},
       cache: {},
       isAnswered: false,
+      clientIp: '',
       // responses: [],
     };
   },
@@ -317,6 +324,10 @@ export default {
     this.$store.dispatch('getBaseSchema', url);
   },
   mounted() {
+    // `http://api.ipstack.com/check?access_key=${accessKey}&hostname=1`
+    axios.get('https://api.muctool.de/whois').then((resp) => {
+      this.clientIp = resp.data.ip;
+    });
     if (this.$route.params.id) {
       this.$store.dispatch('setActivityIndex', this.$route.params.id);
     }
@@ -353,6 +364,15 @@ export default {
         return order;
       }
       return [];
+    },
+    allowExport() {
+      if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema['https://schema.repronim.org/allow']) {
+        // console.log(351, this.$store.state.schema['https://schema.repronim.org/allow'][0]['@list']);
+        const allowList = _.map(this.$store.state.schema['https://schema.repronim.org/allow'][0]['@list'],
+          u => u['@id']);
+        return allowList.includes('https://schema.repronim.org/allow_export');
+      }
+      return false;
     },
     schemaNameMapper() {
       const output = {};
@@ -421,6 +441,21 @@ export default {
       // return all true's:
       return _.mapValues(this.schemaOrder, () => true);
     },
+    checkAdvance() {
+      if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema['https://schema.repronim.org/allow']) {
+        const allowList = _.map(this.$store.state.schema['https://schema.repronim.org/allow'][0]['@list'],
+          u => u['@id']);
+        return allowList.includes('https://schema.repronim.org/auto_advance');
+      }
+      return false;
+    },
+    nextActivity() {
+      const nextObj = {};
+      for (let i = 0; i < this.schemaOrder.length - 1; i += 1) {
+        nextObj[this.schemaOrder[i]] = this.schemaOrder[i + 1];
+      }
+      return nextObj;
+    },
   },
 };
 </script>
@@ -436,6 +471,10 @@ export default {
 
 #content {
   width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .wrapper {
@@ -508,5 +547,16 @@ ul ul a {
 
 select > .placeholder {
   display: none;
+}
+
+.spacer {
+  flex: 1;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 </style>
