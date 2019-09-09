@@ -82,7 +82,7 @@ export default {
       // eslint-disable-next-line
       this.getData();
       this.t0 = performance.now();
-      console.log(85, 'start of multipart', this.t0);
+      // console.log(85, 'start of multipart', this.t0);
     }
   },
   methods: {
@@ -202,18 +202,18 @@ export default {
       const respData = { startedAt: this.t0 / 1000,
         recordedAt: t1 / 1000,
         value: val };
-      console.log(205, 'multi resp', respData);
+      // console.log(205, 'multi resp', respData);
       this.$emit('saveResponse', this.context[index]['@id'], respData);
       this.t0 = t1;
       const currResponses = { ...this.responses };
-      console.log(209, 'multi curr resp', currResponses);
-      console.log(210, 'multi this resp', this.responses);
+      // console.log(209, 'multi curr resp', currResponses);
+      // console.log(210, 'multi this resp', this.responses);
       if (val instanceof Object) {
-        console.log(212, respData.value);
+        // console.log(212, respData.value);
         currResponses[this.context[index]['@id']] = respData.value;
       } else {
         currResponses[this.context[index]['@id']] = val;
-        console.log(216);
+        // console.log(216);
       }
       // TODO: add back branching logic
       // this.visibility = this.getVisibility(currResponses);
