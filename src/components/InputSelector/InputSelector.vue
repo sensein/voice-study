@@ -1,8 +1,7 @@
 <template>
   <div class="inputContent">
     <div class="lead scroll mb-3 pr-3 pl-3" v-if="preamble">
-      <p :class="{'text-justify': inputType==='audioPassageRecord'}"
-         v-html="preamble">{{ preamble }}</p>
+      <p :class="{'text-justify': inputType==='audioPassageRecord'}" v-html="preamble">{{ preamble }}</p>
     </div>
     <div class="lead scroll mb-3 pr-3 pl-3" v-if="title">
       <p :class="{'text-justify': inputType==='audioPassageRecord'}" v-html="title">{{ title }}</p>
@@ -134,18 +133,10 @@
         :init="init" v-on:valueChanged="sendData"/>
     </div>
 
-    <div v-else-if="inputType ==='static'">
-      <Static
-        :constraints="valueConstraints"
-        :selected_language="selected_language"
-        :init="init" v-on:valueChanged="sendData"/>
-    </div>
-
     <div v-else-if="inputType ==='save'">
       <SaveData
         :constraints="valueConstraints"
         :selected_language="selected_language"
-        :ipAddress="ipAddress"
         :init="init" v-on:valueChanged="sendData"/>
     </div>
 
@@ -192,7 +183,6 @@ import TimeRange from '../Inputs/TimeRange';
 import SelectInput from '../Inputs/SelectInput';
 import AudioCheckRecord from '../Inputs/AudioCheckRecord';
 import StaticReadOnly from '../Inputs/StaticReadOnly';
-import Static from '../Inputs/Static';
 import SaveData from '../Inputs/SaveData/SaveData';
 import StudySign from '../StudySign/StudySign';
 
@@ -224,9 +214,6 @@ export default {
     preamble: {
       type: String,
     },
-    ipAddress: {
-      type: String,
-    },
   },
   components: {
     StudySign,
@@ -244,7 +231,6 @@ export default {
     SelectInput,
     AudioCheckRecord,
     StaticReadOnly,
-    Static,
   },
   data() {
     return {

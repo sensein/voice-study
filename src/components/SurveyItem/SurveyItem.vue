@@ -13,7 +13,6 @@
                        :init="init"
                        :responses="responses"
                        :selected_language="selected_language"
-                       :ipAddress="clientIp"
                        :showPassOptions="showPassOptions"
                        v-on:skip="sendSkip"
                        v-on:dontKnow="sendDontKnow"
@@ -33,7 +32,6 @@
                    :responses="mp_responses"
                    :srcUrl="item['@id']"
                    :showPassOptions="showPassOptions"
-                   :ipAddress="clientIp"
                    v-on:skip="sendSkip"
                    v-on:dontKnow="sendDontKnow"
                    v-on:next="sendNext"
@@ -48,7 +46,6 @@
                    :responses="mp_responses"
                    :srcUrl="item['@id']"
                    :showPassOptions="showPassOptions"
-                   :ipAddress="clientIp"
                    v-on:skip="sendSkip"
                    v-on:dontKnow="sendDontKnow"
                    v-on:next="sendNext"
@@ -118,9 +115,6 @@ export default {
       type: Number,
     },
     selected_language: {
-      type: String,
-    },
-    clientIp: {
       type: String,
     },
     showPassOptions: {

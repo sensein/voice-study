@@ -1,6 +1,6 @@
 <template>
-  <div class="staticReadOnly">
-    <b-btn @click="onSubmit"> {{ input }} </b-btn>
+  <div class="textInput">
+    <label> {{ showResult }}</label>
   </div>
 </template>
 
@@ -14,22 +14,26 @@ export default {
   methods: {
     onSubmit(e) {
       e.preventDefault();
-      if (this.result) {
-        this.$emit('valueChanged', this.result);
-        this.input = 'Success';
-      } else this.input = 'Fail';
-      // this.$emit('valueChanged', this.input);
+      this.$emit('valueChanged', this.input);
     },
   },
   data() {
     return {
-      input: 'show result',
+      input: '',
     };
   },
   mounted() {
     if (this.init) {
       this.input = this.init;
     }
+  },
+  computed: {
+    showResult() {
+      if (this.result) {
+        this.$emit('valueChanged', this.result);
+        return 'Success';
+      } return 'Fail';
+    },
   },
 };
 </script>
