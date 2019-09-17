@@ -222,6 +222,16 @@ export default {
         currResponses[this.context[index]['@id']] = respData.value;
       } else {
         currResponses[this.context[index]['@id']] = val;
+      this.$emit('saveResponse', this.context[index]['@id'], respData);
+      this.t0 = t1;
+      const currResponses = { ...this.responses };
+      console.log(224, 'curr resp', currResponses);
+      console.log(225, 'this resp', this.responses);
+      if (val instanceof Object) {
+        console.log(225, respData.value);
+        currResponses[this.context[index]['@id']] = respData.value;
+      } else {
+        currResponses[this.context[index]['@id']] = val;
       }
       this.visibility = this.getVisibility(currResponses);
       if (!_.isEmpty(this.activity['https://schema.repronim.org/scoringLogic'])) {
