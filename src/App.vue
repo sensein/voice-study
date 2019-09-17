@@ -149,6 +149,7 @@ export default {
       }
     },
     saveResponse(key, value) {
+      console.log(152, key, value);
       let needsVizUpdate = false;
       if (this.currentResponse[key] !== value && this.progress[this.activityIndex] === 100) {
         // there has been a change in an already completed activity
