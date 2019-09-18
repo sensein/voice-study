@@ -6,7 +6,13 @@
     </div>
     <div v-else>
       <div v-if="this.autoAdvance && complete">
-        <div class="mt-3 mb-3">Please review your responses, then click "Next" below:</div>
+        <p v-if="currentActivityIndex === 0">
+          Great, you are eligible for the voice study! Hit "Next" to learn about the study, risks,
+          and benefits of joining.</p>
+        <p v-else-if="currentActivityIndex === 1">
+          Thanks for walking through the consent. You have agreed to the study, let’s get started.
+        </p>
+        <p v-else>Please review your responses, then click "Next" below:</p>
         <b-button v-if="nextActivity[activityUrl]" @click="nextActivity1">Next</b-button>
       </div>
       <b-progress :value="progress" :max="100" class="mb-3"></b-progress>
@@ -439,6 +445,9 @@ export default {
     },
     activityUrl() {
       return this.srcUrl;
+    },
+    currentActivityIndex() {
+      return parseInt(this.$store.state.activityIndex);
     },
   },
   mounted() {
