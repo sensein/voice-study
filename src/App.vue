@@ -58,13 +58,19 @@
             <router-view
               :srcUrl="srcUrl" :responses="responses[activityIndex]"
               :selected_language="selected_language"
+              :ipAddress="clientIp"
               :progress="progress[activityIndex]"
+              :autoAdvance="checkAdvance"
+              :actVisibility="Object.values(visibility)"
+              :nextActivity="nextActivity"
               v-on:updateProgress="updateProgress"
               v-on:saveResponse="saveResponse"
               v-on:saveScores="saveScores"
               v-on:clearResponses="clearResponses"
             />
           </b-container>
+          <div class="spacer"></div>
+          <Footer/>
       </div>
     </div>
   </div>
@@ -81,6 +87,7 @@ import { saveAs } from 'file-saver';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import circleProgress from './components/Circle/';
+import Footer from './components/Footer/';
 
 Vue.use(BootstrapVue);
 Vue.filter('reverse', value => value.slice().reverse());
@@ -108,6 +115,7 @@ export default {
   name: 'App',
   components: {
     circleProgress,
+    Footer,
   },
   data() {
     return {
@@ -116,6 +124,7 @@ export default {
       visibility: {},
       cache: {},
       isAnswered: false,
+      clientIp: '',
       // responses: [],
     };
   },
@@ -317,6 +326,11 @@ export default {
     this.$store.dispatch('getBaseSchema', url);
   },
   mounted() {
+    // `http://api.ipstack.com/check?access_key=${accessKey}&hostname=1`
+    axios.get('https://api.muctool.de/whois').then((resp) => {
+      console.log(32, resp.data.ip);
+      this.clientIp = resp.data.ip;
+    });
     if (this.$route.params.id) {
       this.$store.dispatch('setActivityIndex', this.$route.params.id);
     }
@@ -421,6 +435,21 @@ export default {
       // return all true's:
       return _.mapValues(this.schemaOrder, () => true);
     },
+    checkAdvance() {
+      if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema['https://schema.repronim.org/allow']) {
+        const allowList = _.map(this.$store.state.schema['https://schema.repronim.org/allow'][0]['@list'],
+          u => u['@id']);
+        return allowList.includes('https://schema.repronim.org/auto_advance');
+      }
+      return false;
+    },
+    nextActivity() {
+      const nextObj = {};
+      for (let i = 0; i < this.schemaOrder.length - 1; i += 1) {
+        nextObj[this.schemaOrder[i]] = this.schemaOrder[i + 1];
+      }
+      return nextObj;
+    },
   },
 };
 </script>
@@ -436,6 +465,10 @@ export default {
 
 #content {
   width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .wrapper {
@@ -508,5 +541,15 @@ ul ul a {
 
 select > .placeholder {
   display: none;
+}
+
+.spacer {
+  flex: 1;
+}
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 </style>

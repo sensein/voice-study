@@ -1,27 +1,5 @@
 <template>
   <div class="hello">
-    <!--<div class="mb-3">-->
-      <!--<div>-->
-        <!--<div class="mb-3">Please review your responses, then click "Save" to proceed</div>-->
-        <!--&lt;!&ndash;<b-alert :show="error.show" variant="danger">&ndash;&gt;-->
-          <!--&lt;!&ndash;Oh no! <span v-if="error.error">{{error.error.message}}</span>&ndash;&gt;-->
-        <!--&lt;!&ndash;</b-alert>&ndash;&gt;-->
-        <!--&lt;!&ndash;<save-button variant="success" label="save" :ready="saveReady" :click="sendData"/>&ndash;&gt;-->
-      <!--</div>-->
-      <!--<div>-->
-        <!--<div class="mt-3 mb-3">-->
-          <!--<p class="lead"> Thanks! </p>-->
-        <!--</div>-->
-        <!--<b-button v-if="nextActivity[srcUrl]" size="lg" variant="info"-->
-                  <!--:to="{name: 'Home', params: {id: nextActivity[srcUrl]}}">-->
-          <!--Next-->
-        <!--</b-button>-->
-        <!--<b-button v-else size="lg" variant="secondary"-->
-                  <!--:to="{name: 'Landing'}">-->
-          <!--Back to home page-->
-        <!--</b-button>-->
-      <!--</div>-->
-    <!--</div>-->
     <div v-if="!listShow.length">
       <h1 >Loading...</h1>
       <Loader />
@@ -53,6 +31,7 @@
             v-on:setScores="setScore"
             :responses="responses"
             :selected_language="selected_language"
+            :clientIp="ipAddress"
             :showPassOptions="findPassOptions"
             :score="score"
           />
@@ -98,7 +77,7 @@ const safeEval = require('safe-eval');
 
 export default {
   name: 'Survey',
-  props: ['srcUrl', 'responses', 'selected_language', 'progress'],
+  props: ['srcUrl', 'responses', 'selected_language', 'progress', 'autoAdvance', 'actVisibility', 'nextActivity', 'ipAddress'],
   data() {
     return {
       activity: {},
