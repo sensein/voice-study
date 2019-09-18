@@ -5,7 +5,7 @@
       <Loader />
     </div>
     <div v-else>
-      <div v-if="complete">
+      <div v-if="this.autoAdvance && complete">
         <div class="mt-3 mb-3">Please review your responses, then click "Next" below:</div>
         <b-button @click="nextActivity">Next</b-button>
       </div>
