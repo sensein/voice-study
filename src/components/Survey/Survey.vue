@@ -208,18 +208,13 @@ export default {
       const respData = { startedAt: this.t0 / 1000,
         recordedAt: t1 / 1000,
         value: val };
-      // console.log(219, 'survey resp', respData);
       this.$emit('saveResponse', this.context[index]['@id'], val);
       this.t0 = t1;
       const currResponses = { ...this.responses };
-      // console.log(224, 'curr resp', currResponses);
-      // console.log(225, 'this resp', this.responses);
       if (val instanceof Object) {
-        // console.log(225, respData.value);
         currResponses[this.context[index]['@id']] = respData.value;
       } else {
         currResponses[this.context[index]['@id']] = val;
-        // console.log(229);
       }
       this.visibility = this.getVisibility(currResponses);
       if (!_.isEmpty(this.activity['https://schema.repronim.org/scoringLogic'])) {
@@ -472,7 +467,6 @@ export default {
       this.getData();
     }
     this.t0 = performance.now();
-    // console.log(424, 'start of survey', this.t0);
   },
 };
 </script>
