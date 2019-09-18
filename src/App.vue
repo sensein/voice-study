@@ -30,7 +30,7 @@
             </li>
         </ul>
         <div>
-          <b-button class="align-middle" @click="downloadZipData"
+          <b-button v-if="allowExport" class="align-middle" @click="downloadZipData"
                     :disabled="!isAnswered">Export</b-button>
         </div>
       </nav>
@@ -367,6 +367,15 @@ export default {
         return order;
       }
       return [];
+    },
+    allowExport() {
+      if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema['https://schema.repronim.org/allow']) {
+        // console.log(351, this.$store.state.schema['https://schema.repronim.org/allow'][0]['@list']);
+        const allowList = _.map(this.$store.state.schema['https://schema.repronim.org/allow'][0]['@list'],
+          u => u['@id']);
+        return allowList.includes('https://schema.repronim.org/allow_export');
+      }
+      return false;
     },
     schemaNameMapper() {
       const output = {};
