@@ -137,6 +137,7 @@
       <SaveData
         :constraints="valueConstraints"
         :selected_language="selected_language"
+        :ipAddress="ipAddress"
         :init="init" v-on:valueChanged="sendData"/>
     </div>
 
@@ -145,6 +146,13 @@
         :constraints="valueConstraints"
         :selected_language="selected_language"
         :result="true"
+        :init="init" v-on:valueChanged="sendData"/>
+    </div>
+
+    <div v-else-if="inputType ==='static'">
+      <Static
+        :constraints="valueConstraints"
+        :selected_language="selected_language"
         :init="init" v-on:valueChanged="sendData"/>
     </div>
 
@@ -185,6 +193,7 @@ import AudioCheckRecord from '../Inputs/AudioCheckRecord';
 import StaticReadOnly from '../Inputs/StaticReadOnly';
 import SaveData from '../Inputs/SaveData/SaveData';
 import StudySign from '../StudySign/StudySign';
+import Static from '../Inputs/Static';
 
 
 export default {
@@ -214,6 +223,9 @@ export default {
     preamble: {
       type: String,
     },
+    ipAddress: {
+      type: String,
+    },
   },
   components: {
     StudySign,
@@ -231,6 +243,7 @@ export default {
     SelectInput,
     AudioCheckRecord,
     StaticReadOnly,
+    Static,
   },
   data() {
     return {

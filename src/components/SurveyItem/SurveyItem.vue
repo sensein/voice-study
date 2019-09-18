@@ -13,6 +13,7 @@
                        :init="init"
                        :responses="responses"
                        :selected_language="selected_language"
+                       :ipAddress="clientIp"
                        :showPassOptions="showPassOptions"
                        v-on:skip="sendSkip"
                        v-on:dontKnow="sendDontKnow"
@@ -21,10 +22,6 @@
         />
 
         <div class="loader" v-else-if="status !== 'ready'">
-          <!-- <b-progress :value="50"
-          :max="100" animated variant="secondary" class="mb-3 align-middle">
-          </b-progress>
-          <span class="align-middle mt-3 text-muted">loading</span> -->
           <Loader />
         </div>
         <multipart v-else-if="ui === 'multipart'"
@@ -32,6 +29,7 @@
                    :responses="mp_responses"
                    :srcUrl="item['@id']"
                    :showPassOptions="showPassOptions"
+                   :ipAddress="clientIp"
                    v-on:skip="sendSkip"
                    v-on:dontKnow="sendDontKnow"
                    v-on:next="sendNext"
@@ -46,6 +44,7 @@
                    :responses="mp_responses"
                    :srcUrl="item['@id']"
                    :showPassOptions="showPassOptions"
+                   :ipAddress="clientIp"
                    v-on:skip="sendSkip"
                    v-on:dontKnow="sendDontKnow"
                    v-on:next="sendNext"
@@ -115,6 +114,9 @@ export default {
       type: Number,
     },
     selected_language: {
+      type: String,
+    },
+    clientIp: {
       type: String,
     },
     showPassOptions: {

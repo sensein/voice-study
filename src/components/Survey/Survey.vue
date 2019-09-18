@@ -1,37 +1,28 @@
 <template>
   <div class="hello">
-    <!--<div class="mb-3">-->
-      <!--<div>-->
-        <!--<div class="mb-3">Please review your responses, then click "Save" to proceed</div>-->
-        <!--&lt;!&ndash;<b-alert :show="error.show" variant="danger">&ndash;&gt;-->
-          <!--&lt;!&ndash;Oh no! <span v-if="error.error">{{error.error.message}}</span>&ndash;&gt;-->
-        <!--&lt;!&ndash;</b-alert>&ndash;&gt;-->
-        <!--&lt;!&ndash;<save-button variant="success" label="save" :ready="saveReady" :click="sendData"/>&ndash;&gt;-->
-      <!--</div>-->
-      <!--<div>-->
-        <!--<div class="mt-3 mb-3">-->
-          <!--<p class="lead"> Thanks! </p>-->
-        <!--</div>-->
-        <!--<b-button v-if="nextActivity[srcUrl]" size="lg" variant="info"-->
-                  <!--:to="{name: 'Home', params: {id: nextActivity[srcUrl]}}">-->
-          <!--Next-->
-        <!--</b-button>-->
-        <!--<b-button v-else size="lg" variant="secondary"-->
-                  <!--:to="{name: 'Landing'}">-->
-          <!--Back to home page-->
-        <!--</b-button>-->
-      <!--</div>-->
-    <!--</div>-->
     <div v-if="!listShow.length">
       <h1 >Loading...</h1>
       <Loader />
     </div>
     <div v-else>
-      <transition name="list" tag="div" mode="in-out">
-        <div v-if="progress === 100" class="mt-3 mb-3">
-          <slot></slot>
+      <div v-if="complete && autoAdvance">
+        <div v-if="isVis">
+          <p v-if="currentActivityIndex === 0">
+            Great, you are eligible for the voice study! Hit "Next" to learn about the study, risks,
+            and benefits of joining.</p>
+          <p v-else-if="currentActivityIndex === 1">
+            Thanks for walking through the consent. You have agreed to the study, let’s get started.
+          </p>
+          <p v-else-if="currentActivityIndex !== 9">
+            Please review your responses, then click "Next" below:</p>
+          <!--<div class="mt-3 mb-3">Please review your responses, then click "Next" below:</div>-->
+          <b-button v-if="nextActivity[activityUrl]" @click="nextActivity1">Next</b-button>
         </div>
-      </transition>
+        <div v-else>
+          <p>Thank you for participating. Not eligible at this time!</p>
+        </div>
+      </div>
+      <br>
       <b-progress :value="progress" :max="100" class="mb-3"></b-progress>
       <div v-if="preambleText" class="preamble-text">
         <strong> {{ preambleText }} </strong>
@@ -53,6 +44,7 @@
             v-on:setScores="setScore"
             :responses="responses"
             :selected_language="selected_language"
+            :clientIp="ipAddress"
             :showPassOptions="findPassOptions"
             :score="score"
           />
@@ -98,7 +90,7 @@ const safeEval = require('safe-eval');
 
 export default {
   name: 'Survey',
-  props: ['srcUrl', 'responses', 'selected_language', 'progress'],
+  props: ['srcUrl', 'responses', 'selected_language', 'progress', 'autoAdvance', 'actVisibility', 'nextActivity', 'ipAddress'],
   data() {
     return {
       activity: {},
@@ -108,6 +100,7 @@ export default {
       score: 0,
       isSkip: false,
       isDontKnow: false,
+      isVis: false,
     };
   },
   components: {
@@ -222,16 +215,6 @@ export default {
         currResponses[this.context[index]['@id']] = respData.value;
       } else {
         currResponses[this.context[index]['@id']] = val;
-      this.$emit('saveResponse', this.context[index]['@id'], respData);
-      this.t0 = t1;
-      const currResponses = { ...this.responses };
-      console.log(224, 'curr resp', currResponses);
-      console.log(225, 'this resp', this.responses);
-      if (val instanceof Object) {
-        console.log(225, respData.value);
-        currResponses[this.context[index]['@id']] = respData.value;
-      } else {
-        currResponses[this.context[index]['@id']] = val;
       }
       this.visibility = this.getVisibility(currResponses);
       if (!_.isEmpty(this.activity['https://schema.repronim.org/scoringLogic'])) {
@@ -342,6 +325,14 @@ export default {
         return newList;
       } return this.activity['https://schema.repronim.org/order'][0]['@list'];
     },
+    nextActivity1() {
+      const currentIndex = parseInt(this.$store.state.activityIndex);
+      console.log(36, currentIndex + 1);
+      const nextIndex = currentIndex + 1;
+      if (this.actVisibility[nextIndex]) {
+        this.$router.push(`/activities/${nextIndex}`);
+      }
+    },
   },
   watch: {
     $route() {
@@ -351,6 +342,13 @@ export default {
           this.$store.dispatch('getActivityData');
         }
       }
+    },
+    actVisibility: {
+      deep: true,
+      handler(newVal) {
+        newVal.shift();
+        this.isVis = _.some(newVal);
+      },
     },
     listContentRev() {
       this.$forceUpdate();
@@ -377,6 +375,9 @@ export default {
     },
   },
   computed: {
+    complete() {
+      return this.progress === 100;
+    },
     storeContext() {
       if (this.$store) {
         const state = this.$store.state;
@@ -452,7 +453,13 @@ export default {
         };
       }
       else return null;
-    }
+    },
+    activityUrl() {
+      return this.srcUrl;
+    },
+    currentActivityIndex() {
+      return parseInt(this.$store.state.activityIndex);
+    },
   },
   mounted() {
     if (this.srcUrl) {
