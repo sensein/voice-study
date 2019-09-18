@@ -2,7 +2,7 @@
   <div id="app" class="">
     <div class="wrapper">
       <!-- Sidebar -->
-      <nav id="sidebar" ref="sidebar">
+      <nav id="sidebar" class="active" ref="sidebar">
         <div class="sidebar-header">
           <h3>Activities</h3>
         </div>
@@ -15,9 +15,9 @@
         <ul class="list-unstyled components">
             <!-- <p>Dummy Heading</p> -->
             <li v-for="(ui, index) in schemaOrder" :key="index">
-                <a @click="setActivity(index)"
+                <a
                 v-if="visibility[index]"
-                :class="{'current': index==activityIndex}">
+                :class="{'current': index===activityIndex}">
                   <circleProgress
                    :radius="20"
                    :progress="progress[index]"
@@ -119,7 +119,7 @@ export default {
   },
   data() {
     return {
-      sidebarActive: true,
+      sidebarActive: false,
       selected_language: 'en',
       visibility: {},
       cache: {},
