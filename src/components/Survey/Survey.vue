@@ -209,7 +209,7 @@ export default {
         recordedAt: t1 / 1000,
         value: val };
       // console.log(219, 'survey resp', respData);
-      this.$emit('saveResponse', this.context[index]['@id'], respData);
+      this.$emit('saveResponse', this.context[index]['@id'], val);
       this.t0 = t1;
       const currResponses = { ...this.responses };
       // console.log(224, 'curr resp', currResponses);
