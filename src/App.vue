@@ -92,6 +92,7 @@ import Footer from './components/Footer/';
 Vue.use(BootstrapVue);
 Vue.filter('reverse', value => value.slice().reverse());
 
+const reproterms = 'https://raw.githubusercontent.com/ReproNim/reproschema/master/terms/';
 
 function getFilename(s) {
   const folders = s.split('/');
@@ -104,8 +105,8 @@ function getVariableName(s, variableMap) {
   const vmap = variableMap[0]['@list'];
   const mapper = {};
   _.map(vmap, (v) => {
-    const uri = v['https://schema.repronim.org/isAbout'][0]['@id'];
-    const variable = v['https://schema.repronim.org/variableName'][0]['@value'];
+    const uri = v[`${reproterms}isAbout`][0]['@id'];
+    const variable = v[`${reproterms}variableName`][0]['@value'];
     mapper[uri] = variable;
   });
   return mapper[s];
@@ -158,7 +159,7 @@ export default {
       }
     },
     saveResponse(key, value) {
-      console.log(152, key, value);
+      // console.log(152, key, value);
       let needsVizUpdate = false;
       if (this.currentResponse[key] !== value && this.progress[this.activityIndex] === 100) {
         // there has been a change in an already completed activity
@@ -184,12 +185,13 @@ export default {
       // TODO: this is a hack. the jsonld expander should give us this info.
       if (url) {
         if (!_.isEmpty(this.$store.state.schema)) {
-          const nameMap = this.$store.state.schema['https://schema.repronim.org/activity_display_name'][0];
+          const nameMap = this.$store.state.schema[`${reproterms}activity_display_name`][0];
           if (url in nameMap) {
-            // console.log(123, nameMap[url][0]['@id']);
+            console.log(123, nameMap);
             const mappedUrl = nameMap[url][0]['@id'];
             const folders = mappedUrl.split('/');
             const N = folders.length;
+            console.log(194, folders[N - 1]);
             return folders[N - 1].split('_schema')[0].split('.jsonld')[0];
           }
         }
@@ -219,6 +221,7 @@ export default {
         // console.log('making request', request, 'cache', this.cache);
         const resp = await axios(request);
         // this.visibility[index] = resp.data;
+        console.log(223, this.cache[cacheKey], resp.data);
         this.cache[cacheKey] = resp.data.qualified;
 
         return resp.data.qualified;
@@ -326,6 +329,10 @@ export default {
     this.$store.dispatch('getBaseSchema', url);
   },
   mounted() {
+    // console.log(329, this.$route.query.uid, this.$route.query.consented);
+    // if (this.$route.query.uid && this.$route.query.consented === 'True') {
+    //   this.$router.push('/activities/0');
+    // }
     // `http://api.ipstack.com/check?access_key=${accessKey}&hostname=1`
     axios.get('https://api.muctool.de/whois').then((resp) => {
       console.log(32, resp.data.ip);
@@ -362,18 +369,18 @@ export default {
     },
     schemaOrder() {
       if (!_.isEmpty(this.$store.state.schema)) {
-        const order = _.map(this.$store.state.schema['https://schema.repronim.org/order'][0]['@list'],
+        const order = _.map(this.$store.state.schema[`${reproterms}order`][0]['@list'],
           u => u['@id']);
         return order;
       }
       return [];
     },
     allowExport() {
-      if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema['https://schema.repronim.org/allow']) {
-        // console.log(351, this.$store.state.schema['https://schema.repronim.org/allow'][0]['@list']);
-        const allowList = _.map(this.$store.state.schema['https://schema.repronim.org/allow'][0]['@list'],
+      if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema[`${reproterms}allow`]) {
+        // console.log(351, this.$store.state.schema[reproterms+'allow'][0]['@list']);
+        const allowList = _.map(this.$store.state.schema[`${reproterms}allow`][0]['@list'],
           u => u['@id']);
-        return allowList.includes('https://schema.repronim.org/allow_export');
+        return allowList.includes(`${reproterms}allow_export`);
       }
       return false;
     },
@@ -382,8 +389,8 @@ export default {
       if (this.schemaOrder) {
         _.map(this.schemaOrder, (s) => {
           let fname = '';
-          if (this.schema['https://schema.repronim.org/variableMap']) {
-            fname = getVariableName(s, this.schema['https://schema.repronim.org/variableMap']);
+          if (this.schema[`${reproterms}variableMap`]) {
+            fname = getVariableName(s, this.schema[`${reproterms}variableMap`]);
           } else {
             // TODO: remove this backwards compatibility else
             fname = getFilename(s);
@@ -394,11 +401,11 @@ export default {
       return output;
     },
     visibilityConditions() {
-      if (this.schema['https://schema.repronim.org/visibility']) {
+      if (this.schema[`${reproterms}visibility`]) {
         return _.map(this.schemaOrder, (s) => {
           let keyName = '';
-          if (this.schema['https://schema.repronim.org/variableMap']) {
-            keyName = getVariableName(s, this.schema['https://schema.repronim.org/variableMap']);
+          if (this.schema[`${reproterms}variableMap`]) {
+            keyName = getVariableName(s, this.schema[`${reproterms}variableMap`]);
           } else {
             // TODO: remove this backwards compatibility else
             keyName = getFilename(s);
@@ -407,7 +414,7 @@ export default {
           // look through the "https://schema.repronim.org/visibility" field
           // and reformat nicely
 
-          let condition = _.filter(this.schema['https://schema.repronim.org/visibility'], c => c['@index'] === keyName);
+          let condition = _.filter(this.schema[`${reproterms}visibility`], c => c['@index'] === keyName);
           if (condition.length === 1) {
             condition = condition[0];
 
@@ -420,16 +427,17 @@ export default {
 
             if (conditionKeys.indexOf('http://schema.org/httpMethod') > -1 &&
               conditionKeys.indexOf('http://schema.org/url') > -1 &&
-              conditionKeys.indexOf('https://schema.repronim.org/payload') > -1
+              conditionKeys.indexOf(`${reproterms}payload`) > -1
             ) {
               // lets fill the payload here.
               const payload = {};
-              const payloadList = condition['https://schema.repronim.org/payload'];
+              const payloadList = condition[`${reproterms}payload`];
               _.map(payloadList, (p) => {
                 const item = p['@value'];
                 const index = this.schemaOrder.indexOf(this.schemaNameMapper[item]);
                 payload[this.schemaNameMapper[item]] = this.scores[index];
               });
+              console.log(43, payload);
               return {
                 url: condition['http://schema.org/url'][0]['@value'],
                 method: condition['http://schema.org/httpMethod'][0]['@value'],
@@ -445,10 +453,11 @@ export default {
       return _.mapValues(this.schemaOrder, () => true);
     },
     checkAdvance() {
-      if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema['https://schema.repronim.org/allow']) {
-        const allowList = _.map(this.$store.state.schema['https://schema.repronim.org/allow'][0]['@list'],
+      console.log('in check adv', this.$store.state.schema[`${reproterms}visibility`]);
+      if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema[`${reproterms}allow`]) {
+        const allowList = _.map(this.$store.state.schema[`${reproterms}allow`][0]['@list'],
           u => u['@id']);
-        return allowList.includes('https://schema.repronim.org/auto_advance');
+        return allowList.includes(`${reproterms}auto_advance`);
       }
       return false;
     },

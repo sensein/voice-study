@@ -88,6 +88,8 @@ import Loader from '../Loader/';
 Vue.component('survey-item', SurveyItem);
 const safeEval = require('safe-eval');
 
+const reproterms = 'https://raw.githubusercontent.com/ReproNim/reproschema/master/terms/';
+
 export default {
   name: 'Survey',
   props: ['srcUrl', 'responses', 'selected_language', 'progress', 'autoAdvance', 'actVisibility', 'nextActivity', 'ipAddress'],
@@ -132,7 +134,7 @@ export default {
       });
     },
     evaluateScoringLogic() {
-      const scoringLogic = (this.activity['https://schema.repronim.org/scoringLogic'][0]['@value']).split('= ')[1];
+      const scoringLogic = (this.activity[`${reproterms}scoringLogic`][0]['@value']).split('= ')[1];
       if (this.responses) {
         let str = '';
         _.forOwn(this.responses, (val, key) => {
@@ -158,14 +160,14 @@ export default {
       if (skip) {
         this.$emit('saveResponse', this.context[idx]['@id'], 'skipped');
         this.setResponse('skipped', idx);
-        // if (!_.isEmpty(this.activity['https://schema.repronim.org/scoringLogic'])) {
+        // if (!_.isEmpty(this.activity[reproterms+'scoringLogic'])) {
         //   this.evaluateScoringLogic();
         // }
       }
       if (dontKnow) {
         this.$emit('saveResponse', this.context[idx]['@id'], 'dontKnow');
         this.setResponse('dontknow', idx);
-        // if (!_.isEmpty(this.activity['https://schema.repronim.org/scoringLogic'])) {
+        // if (!_.isEmpty(this.activity[reproterms+'scoringLogic'])) {
         //   this.evaluateScoringLogic();
         // }
       }
@@ -217,12 +219,12 @@ export default {
         currResponses[this.context[index]['@id']] = val;
       }
       this.visibility = this.getVisibility(currResponses);
-      if (!_.isEmpty(this.activity['https://schema.repronim.org/scoringLogic'])) {
+      if (!_.isEmpty(this.activity[`${reproterms}scoringLogic`])) {
         // TODO: if you uncomment the scoring logic evaluation, things break w/ multipart.
         // this.evaluateScoringLogic();
       }
 
-      // if (this.activity['https://schema.repronim.org/branchLogic']) {
+      // if (this.activity[reproterms+'branchLogic']) {
       //   this.evaluateBranchingLogic();
       // }
       this.updateProgress();
@@ -255,11 +257,11 @@ export default {
       const keys = _.map(this.order, c => c['@id']); // Object.keys(this.responses);
 
       // a variable map is defined! great
-      if (this.activity['https://schema.repronim.org/variableMap']) {
-        const vmap = this.activity['https://schema.repronim.org/variableMap'][0]['@list'];
+      if (this.activity[`${reproterms}variableMap`]) {
+        const vmap = this.activity[`${reproterms}variableMap`][0]['@list'];
         const keyArr = _.map(vmap, (v) => {
-          const key = v['https://schema.repronim.org/isAbout'][0]['@id'];
-          const qId = v['https://schema.repronim.org/variableName'][0]['@value'];
+          const key = v[`${reproterms}isAbout`][0]['@id'];
+          const qId = v[`${reproterms}variableName`][0]['@value'];
           const val = responses[key];
           return { key, val, qId };
         });
@@ -290,9 +292,9 @@ export default {
     getVisibility(responses) {
       // console.log(299, 'vis resp', responses);
       const responseMapper = this.responseMapper(responses);
-      if (!_.isEmpty(this.activity['https://schema.repronim.org/visibility'])) {
+      if (!_.isEmpty(this.activity[`${reproterms}visibility`])) {
         const visibilityMapper = {};
-        _.map(this.activity['https://schema.repronim.org/visibility'], (a) => {
+        _.map(this.activity[`${reproterms}visibility`], (a) => {
           let val = a['@value'];
           if (_.isString(a['@value'])) {
             val = this.evaluateString(a['@value'], responseMapper);
@@ -315,15 +317,15 @@ export default {
       this.$emit('updateProgress', progress);
     },
     order() {
-      if (this.activity['https://schema.repronim.org/shuffle'][0]['@value']) { // when shuffle is true
-        const orderList = this.activity['https://schema.repronim.org/order'][0]['@list'];
+      if (this.activity[`${reproterms}shuffle`][0]['@value']) { // when shuffle is true
+        const orderList = this.activity[`${reproterms}order`][0]['@list'];
         const listToShuffle = orderList.slice(1, orderList.length - 3);
         const newList = _.shuffle(listToShuffle);
         newList.unshift(orderList[0]);
         newList.push(orderList[orderList.length - 3],
           orderList[orderList.length - 2], orderList[orderList.length - 1]);
         return newList;
-      } return this.activity['https://schema.repronim.org/order'][0]['@list'];
+      } return this.activity[`${reproterms}order`][0]['@list'];
     },
     nextActivity1() {
       const currentIndex = parseInt(this.$store.state.activityIndex);
@@ -384,7 +386,7 @@ export default {
         if (state.activities.length && state.activityIndex != null) {
           if (state.activities[state.activityIndex].activity) {
             const currentActivity = state.activities[state.activityIndex].activity;
-            const actList = currentActivity['https://schema.repronim.org/order'][0]['@list'];
+            const actList = currentActivity[`${reproterms}order`][0]['@list'];
             return actList;
           }
         }
@@ -403,7 +405,7 @@ export default {
     },
     context() {
       /* eslint-disable */
-      if (this.activity['https://schema.repronim.org/order']) {
+      if (this.activity[reproterms+'order']) {
         const keys = this.order();
 
         // if (!_.isEmpty(this.visibility)) {
@@ -422,8 +424,8 @@ export default {
       return {};
     },
     preambleText() {
-      if (this.activity['http://schema.repronim.org/preamble']) {
-        const activePreamble = _.filter(this.activity['http://schema.repronim.org/preamble'], p => p['@language'] === this.selected_language);
+      if (this.activity[`${reproterms}preamble`]) {
+        const activePreamble = _.filter(this.activity[`${reproterms}preamble`], p => p['@language'] === this.selected_language);
         return activePreamble[0]['@value'];
       }
       return '';
@@ -437,13 +439,13 @@ export default {
       }
     },
     findPassOptions() {
-      if (this.activity['https://schema.repronim.org/allow']) {
+      if (this.activity[reproterms+'allow']) {
         let isSkip = false;
         let isDontKnow = false;
-        _.map(this.activity['https://schema.repronim.org/allow'][0]['@list'], s => {
-          if (s['@id'] === "https://schema.repronim.org/refused_to_answer") {
+        _.map(this.activity[reproterms+'allow'][0]['@list'], s => {
+          if (s['@id'] === `${reproterms}refused_to_answer`) {
             isSkip = true;
-          } else if (s['@id'] === "https://schema.repronim.org/dont_know_answer") {
+          } else if (s['@id'] === `${reproterms}dont_know_answer`) {
             isDontKnow = true;
           }
         });

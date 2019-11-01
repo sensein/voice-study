@@ -43,6 +43,7 @@ import Loader from '../Loader/';
 
 const safeEval = require('safe-eval');
 
+const reproterms = 'https://raw.githubusercontent.com/ReproNim/reproschema/master/terms/';
 
 export default {
   name: 'MultiPart',
@@ -82,7 +83,7 @@ export default {
       // eslint-disable-next-line
       this.getData();
       this.t0 = performance.now();
-      console.log(85, 'start of multipart', this.t0);
+      // console.log(85, 'start of multipart', this.t0);
     }
   },
   methods: {
@@ -105,9 +106,9 @@ export default {
     },
     getVisibility(responses) {
       const responseMapper = this.responseMapper(responses);
-      if (!_.isEmpty(this.activity['https://schema.repronim.org/visibility'])) {
+      if (!_.isEmpty(this.activity[`${reproterms}visibility`])) {
         const visibilityMapper = {};
-        _.map(this.activity['https://schema.repronim.org/visibility'], (a) => {
+        _.map(this.activity[`${reproterms}visibility`], (a) => {
           let val = a['@value'];
           if (_.isString(a['@value'])) {
             val = this.evaluateString(a['@value'], responseMapper);
@@ -125,11 +126,11 @@ export default {
       const keys = _.map(this.order, c => c['@id']); // Object.keys(this.responses);
 
       // a variable map is defined! great
-      if (this.activity['https://schema.repronim.org/variableMap']) {
-        const vmap = this.activity['https://schema.repronim.org/variableMap'][0]['@list'];
+      if (this.activity[`${reproterms}variableMap`]) {
+        const vmap = this.activity[`${reproterms}variableMap`][0]['@list'];
         const keyArr = _.map(vmap, (v) => {
-          const key = v['https://schema.repronim.org/isAbout'][0]['@id'];
-          const qId = v['https://schema.repronim.org/variableName'][0]['@value'];
+          const key = v[`${reproterms}isAbout`][0]['@id'];
+          const qId = v[`${reproterms}variableName`][0]['@value'];
           const val = responses[key];
           return { key, val, qId };
         });
@@ -202,24 +203,24 @@ export default {
       const respData = { startedAt: this.t0 / 1000,
         recordedAt: t1 / 1000,
         value: val };
-      console.log(205, 'multi resp', respData);
+      // console.log(205, 'multi resp', respData);
       this.$emit('saveResponse', this.context[index]['@id'], respData);
       this.t0 = t1;
       const currResponses = { ...this.responses };
-      console.log(209, 'multi curr resp', currResponses);
-      console.log(210, 'multi this resp', this.responses);
+      // console.log(209, 'multi curr resp', currResponses);
+      // console.log(210, 'multi this resp', this.responses);
       if (val instanceof Object) {
-        console.log(212, respData.value);
+        // console.log(212, respData.value);
         currResponses[this.context[index]['@id']] = respData.value;
       } else {
         currResponses[this.context[index]['@id']] = val;
-        console.log(216);
+        // console.log(216);
       }
       // TODO: add back branching logic
       // this.visibility = this.getVisibility(currResponses);
 
       // TODO: add back scoring logic to this component.
-      // if (!_.isEmpty(this.activity['https://schema.repronim.org/scoringLogic'])) {
+      // if (!_.isEmpty(this.activity[reproterms+'scoringLogic'])) {
       //   this.evaluateScoringLogic();
       // }
       this.updateProgress();
@@ -250,18 +251,18 @@ export default {
       return this.context[this.currentIndex];
     },
     order() {
-      return this.activity['https://schema.repronim.org/order'][0]['@list'];
+      return this.activity[`${reproterms}order`][0]['@list'];
     },
     context() {
-      if (this.activity['https://schema.repronim.org/order']) {
-        const keys = this.activity['https://schema.repronim.org/order'][0]['@list'];
+      if (this.activity[`${reproterms}order`]) {
+        const keys = this.activity[`${reproterms}order`][0]['@list'];
         return keys;
       }
       return [{}];
     },
     preambleText() {
-      if (this.activity['http://schema.repronim.org/preamble']) {
-        const activePreamble = _.filter(this.activity['http://schema.repronim.org/preamble'],
+      if (this.activity[`${reproterms}preamble`]) {
+        const activePreamble = _.filter(this.activity[`${reproterms}preamble`],
           p => p['@language'] === this.selected_language);
         return activePreamble[0]['@value'];
       }

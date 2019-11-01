@@ -107,6 +107,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+// import docusign from 'docusign-esign';
 
 export default {
   name: 'StudySign',
@@ -136,7 +138,6 @@ export default {
     },
     accept() {
       this.$emit('valueChanged', this.name);
-      // this.$store.setCurrentStep(Store.SIGN_DONE);
     },
   },
 };
@@ -272,8 +273,6 @@ footer {
   .slider-element .radio-holder {
     margin-left: .5rem;
   }
-
-@charset "UTF-8";
 
 /*!
  * animate.css -http://daneden.me/animate
