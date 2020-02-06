@@ -187,11 +187,9 @@ export default {
         if (!_.isEmpty(this.$store.state.schema)) {
           const nameMap = this.$store.state.schema[`${reproterms}activity_display_name`][0];
           if (url in nameMap) {
-            console.log(123, nameMap);
             const mappedUrl = nameMap[url][0]['@id'];
             const folders = mappedUrl.split('/');
             const N = folders.length;
-            console.log(194, folders[N - 1]);
             return folders[N - 1].split('_schema')[0].split('.jsonld')[0];
           }
         }
@@ -335,7 +333,7 @@ export default {
     // }
     // `http://api.ipstack.com/check?access_key=${accessKey}&hostname=1`
     axios.get('https://api.muctool.de/whois').then((resp) => {
-      console.log(32, resp.data.ip);
+      // console.log(32, resp.data.ip);
       this.clientIp = resp.data.ip;
     });
     if (this.$route.params.id) {
@@ -453,7 +451,6 @@ export default {
       return _.mapValues(this.schemaOrder, () => true);
     },
     checkAdvance() {
-      console.log('in check adv', this.$store.state.schema[`${reproterms}visibility`]);
       if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema[`${reproterms}allow`]) {
         const allowList = _.map(this.$store.state.schema[`${reproterms}allow`][0]['@list'],
           u => u['@id']);

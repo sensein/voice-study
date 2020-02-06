@@ -329,7 +329,6 @@ export default {
     },
     nextActivity1() {
       const currentIndex = parseInt(this.$store.state.activityIndex);
-      console.log(36, currentIndex + 1);
       const nextIndex = currentIndex + 1;
       if (this.actVisibility[nextIndex]) {
         this.$router.push(`/activities/${nextIndex}`);
