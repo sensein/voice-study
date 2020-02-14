@@ -138,7 +138,7 @@ export default {
     },
     responseMapper(responses) {
       // a variable map is defined! great
-      const vmap = this.activity[`${reproterms}variableMap`][0]['@list'];
+      const vmap = this.activity[`${reproterms}variableMap`];
       const keyArr = _.map(vmap, (v) => {
         const key = v[`${reproterms}isAbout`][0]['@id'];
         const qId = v[`${reproterms}variableName`][0]['@value'];

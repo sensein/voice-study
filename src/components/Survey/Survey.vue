@@ -115,8 +115,6 @@ export default {
         this.activity = resp[0];
         this.listShow = [0];
         this.$nextTick(() => {
-          // eslint-disable-next-line
-          // console.log(86, this.context);
           // set listShow if there are responses for items in the context
           const answered = _.filter(this.context, c =>
             Object.keys(this.responses).indexOf(c['@id']) > -1);
@@ -254,11 +252,10 @@ export default {
       return safeEval(output);
     },
     responseMapper(responses) {
-      const keys = _.map(this.order, c => c['@id']); // Object.keys(this.responses);
-
+      const keys = _.map(this.order(), c => c['@id']); // Object.keys(this.responses);
       // a variable map is defined! great
       if (this.activity[`${reproterms}variableMap`]) {
-        const vmap = this.activity[`${reproterms}variableMap`][0]['@list'];
+        const vmap = this.activity[`${reproterms}variableMap`];
         const keyArr = _.map(vmap, (v) => {
           const key = v[`${reproterms}isAbout`][0]['@id'];
           const qId = v[`${reproterms}variableName`][0]['@value'];
@@ -290,7 +287,6 @@ export default {
       return outMapper;
     },
     getVisibility(responses) {
-      // console.log(299, 'vis resp', responses);
       const responseMapper = this.responseMapper(responses);
       if (!_.isEmpty(this.activity[`${reproterms}visibility`])) {
         const visibilityMapper = {};
