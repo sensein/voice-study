@@ -200,14 +200,15 @@ export default {
       // TODO: this is a hack. the jsonld expander should give us this info.
       if (url) {
         if (!_.isEmpty(this.$store.state.schema)) {
-          getDisplayName(url, this.$store.state.schema[`${reproterms}displayNameMap`]);
-          const nameMap = this.$store.state.schema[`${reproterms}activity_display_name`][0];
-          if (url in nameMap) {
-            const mappedUrl = nameMap[url][0]['@id'];
-            const folders = mappedUrl.split('/');
-            const N = folders.length;
-            return folders[N - 1].split('_schema')[0].split('.jsonld')[0];
-          }
+          const dname = getDisplayName(url, this.$store.state.schema[`${reproterms}displayNameMap`]);
+          return dname;
+          // const nameMap = this.$store.state.schema[`${reproterms}activity_display_name`][0];
+          // if (url in nameMap) {
+          //   const mappedUrl = nameMap[url][0]['@id'];
+          //   const folders = mappedUrl.split('/');
+          //   const N = folders.length;
+          //   return folders[N - 1].split('_schema')[0].split('.jsonld')[0];
+          // }
         }
       }
       return null;
