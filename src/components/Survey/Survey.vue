@@ -136,7 +136,7 @@ export default {
       if (this.responses) {
         let str = '';
         _.forOwn(this.responses, (val, key) => {
-          const qId = (key.split(/\/items\//)[1]).split(/.jsonld/)[0]; // split url to get the scoring key
+          const qId = (key.split(/\/items\//)); // split url to get the scoring key
           if (scoringLogic) {
             if (isNaN(val)) {
               str += `const ${qId}=0; `;
@@ -219,7 +219,7 @@ export default {
       this.visibility = this.getVisibility(currResponses);
       if (!_.isEmpty(this.activity[`${reproterms}scoringLogic`])) {
         // TODO: if you uncomment the scoring logic evaluation, things break w/ multipart.
-        // this.evaluateScoringLogic();
+        this.evaluateScoringLogic();
       }
 
       // if (this.activity[reproterms+'branchLogic']) {
@@ -289,6 +289,7 @@ export default {
     getVisibility(responses) {
       const responseMapper = this.responseMapper(responses);
       if (!_.isEmpty(this.activity[`${reproterms}visibility`])) {
+        // console.log(295, 'visi', this.activity[`${reproterms}visibility`]);
         const visibilityMapper = {};
         _.map(this.activity[`${reproterms}visibility`], (a) => {
           let val = a['@value'];
@@ -461,6 +462,7 @@ export default {
   mounted() {
     if (this.srcUrl) {
       // eslint-disable-next-line
+      console.log(46, this.srcUrl);
       this.getData();
     }
     this.t0 = performance.now();

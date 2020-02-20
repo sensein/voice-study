@@ -183,6 +183,7 @@ export default {
     },
     title() {
       if (this.data['http://schema.org/question']) {
+        // console.log(186, this.selected_language, this.data['http://schema.org/question']);
         const activeQuestion = _.filter(this.data['http://schema.org/question'], q => q['@language'] === this.selected_language);
         return activeQuestion[0]['@value'];
       }

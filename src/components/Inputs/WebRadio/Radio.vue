@@ -61,6 +61,7 @@ export default {
   },
   computed: {
     options() {
+      // console.log(64, this.constraints['http://schema.org/itemListElement'][0]['@list']);
       return _.map(this.constraints['http://schema.org/itemListElement'][0]['@list'], (v) => {
         const activeValueChoices = _.filter(v['http://schema.org/name'], ac => ac['@language'] === this.selected_language);
         return {

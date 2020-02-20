@@ -10,6 +10,7 @@
           <select v-model="selected_language">
             <option disabled value="">Select Language</option>
             <option value="en">English</option>
+            <option value="es">Spanish</option>
           </select>
         </div>
         <ul class="list-unstyled components">
@@ -102,7 +103,7 @@ function getFilename(s) {
 }
 
 function getVariableName(s, variableMap) {
-  const vmap = variableMap[0]['@list'];
+  const vmap = variableMap;
   const mapper = {};
   _.map(vmap, (v) => {
     const uri = v[`${reproterms}isAbout`][0]['@id'];
@@ -110,6 +111,20 @@ function getVariableName(s, variableMap) {
     mapper[uri] = variable;
   });
   return mapper[s];
+}
+
+function getDisplayName(activityUrl, displayNameMap) {
+  // const dmap = displayNameMap;
+  const s = _.filter(displayNameMap, v1 => v1[`${reproterms}isAbout`][0]['@id'] === activityUrl);
+  const dName = _.filter(s[0]['http://schema.org/alternateName'], d => d['@language'] === 'en');
+  // console.log(118, dName[0]['@value']);
+  // const mapper = {};
+  // _.map(dmap, (v) => {
+  //   const vr = _.filter(v[`${reproterms}variableName`], v1 => v1['@language'] === 'en');
+  //   const dName = _.filter(v['http://schema.org/alternateName'], v1 => v1['@language'] === 'en');
+  //   // mapper[vr[0]['@value']] = dName[0]['@value'];
+  // });
+  return dName[0]['@value'];
 }
 
 export default {
@@ -185,6 +200,7 @@ export default {
       // TODO: this is a hack. the jsonld expander should give us this info.
       if (url) {
         if (!_.isEmpty(this.$store.state.schema)) {
+          getDisplayName(url, this.$store.state.schema[`${reproterms}displayNameMap`]);
           const nameMap = this.$store.state.schema[`${reproterms}activity_display_name`][0];
           if (url in nameMap) {
             const mappedUrl = nameMap[url][0]['@id'];
