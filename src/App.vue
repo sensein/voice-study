@@ -115,6 +115,7 @@ function getVariableName(s, variableMap) {
 
 function getDisplayName(activityUrl, displayNameMap) {
   // const dmap = displayNameMap;
+
   const s = _.filter(displayNameMap, v1 => v1[`${reproterms}isAbout`][0]['@id'] === activityUrl);
   const dName = _.filter(s[0]['http://schema.org/alternateName'], d => d['@language'] === 'en');
   // console.log(118, dName[0]['@value']);
@@ -236,7 +237,7 @@ export default {
         // console.log('making request', request, 'cache', this.cache);
         const resp = await axios(request);
         // this.visibility[index] = resp.data;
-        console.log(223, this.cache[cacheKey], resp.data);
+        // console.log(223, this.cache[cacheKey], resp.data);
         this.cache[cacheKey] = resp.data.qualified;
 
         return resp.data.qualified;

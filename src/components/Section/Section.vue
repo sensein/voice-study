@@ -167,6 +167,7 @@ export default {
           output = output.replace(k, 0);
         }
       });
+      // console.log(170, 'output', output);
       return safeEval(output);
     },
     restart() {
@@ -201,6 +202,7 @@ export default {
       // console.log(207, 'section resp obj', respData);
       this.$emit('saveResponse', this.context[index]['@id'], val);
       const currResponses = { ...this.responses };
+      // console.log(204, 'cur resp', currResponses, this.context[index]['@id'], val);
       currResponses[this.context[index]['@id']] = val;
       // TODO: add back branching logic
       this.visibility = this.getVisibility(currResponses);
@@ -213,6 +215,7 @@ export default {
           }
         });
         if (!_.isEmpty(this.scores)) {
+          // console.log(216, 'section score', this.srcUrl, this.scores);
           this.$emit('saveScores', this.srcUrl, this.scores);
         }
       }
@@ -220,18 +223,23 @@ export default {
       this.$forceUpdate();
     },
     getScoring(responses) {
+      // console.log(225, 'responses', responses);
       const responseMapper = this.responseMapper(responses);
+      // console.log(227, 'response mapper', responseMapper);
       if (!_.isEmpty(this.activity[`${reproterms}scoringLogic`])) {
         const scoreMapper = {};
         _.map(this.activity[`${reproterms}scoringLogic`], (a) => {
+          // console.log(231, 'logic a', a);
           let val = a['@value'];
           if (_.isString(a['@value'])) {
             val = this.evaluateString(a['@value'], responseMapper);
+            // console.log(235, 'a.val', val);
           }
           if (responseMapper[a['@index']]) {
             scoreMapper[responseMapper[a['@index']].ref] = val;
           }
         });
+        // console.log(236, 'sec scoremapper', scoreMapper);
         return scoreMapper;
       }
       return {};

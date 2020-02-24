@@ -132,11 +132,14 @@ export default {
       });
     },
     evaluateScoringLogic() {
-      const scoringLogic = (this.activity[`${reproterms}scoringLogic`][0]['@value']).split('= ')[1];
+      const scoringLogic = (this.activity[`${reproterms}scoringLogic`][0]['@value']);
+      console.log(137, scoringLogic);
+      console.log(138, this.activity[`${reproterms}scoring_logic`]);
       if (this.responses) {
         let str = '';
         _.forOwn(this.responses, (val, key) => {
-          const qId = (key.split(/\/items\//)); // split url to get the scoring key
+          const qId = (key.split(/\/items\//))[1]; // split url to get the scoring key
+          console.log(143, val, key, qId);
           if (scoringLogic) {
             if (isNaN(val)) {
               str += `const ${qId}=0; `;
@@ -147,8 +150,9 @@ export default {
         });
         try {
           // eslint-disable-next-line
+          console.log(154, str);
           this.score = eval(`${str}  ${scoringLogic}`);
-          // console.log('TOTAL SCORING LOGIC::::', this.score);
+          console.log('TOTAL SCORING LOGIC::::', this.score);
         } catch (e) {
           // Do nothing
         }
@@ -219,7 +223,7 @@ export default {
       this.visibility = this.getVisibility(currResponses);
       if (!_.isEmpty(this.activity[`${reproterms}scoringLogic`])) {
         // TODO: if you uncomment the scoring logic evaluation, things break w/ multipart.
-        this.evaluateScoringLogic();
+        // this.evaluateScoringLogic();
       }
 
       // if (this.activity[reproterms+'branchLogic']) {
@@ -228,6 +232,7 @@ export default {
       this.updateProgress();
     },
     setScore(scoreObj, index) {
+      // console.log(236, 'set score in survey', this.context[index]['@id'], scoreObj);
       this.$emit('saveScores', this.context[index]['@id'], scoreObj);
     },
     restart() {
@@ -462,7 +467,7 @@ export default {
   mounted() {
     if (this.srcUrl) {
       // eslint-disable-next-line
-      console.log(46, this.srcUrl);
+      // console.log(46, this.srcUrl);
       this.getData();
     }
     this.t0 = performance.now();
