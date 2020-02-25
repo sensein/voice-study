@@ -2,7 +2,7 @@
   <div id="app" class="">
     <div class="wrapper">
       <!-- Sidebar -->
-      <nav id="sidebar" class="active" ref="sidebar">
+      <nav id="sidebar" v-bind:class="{'active':checkAdvance}" ref="sidebar">
         <div class="sidebar-header">
           <h3>Activities</h3>
         </div>
@@ -16,7 +16,7 @@
         <ul class="list-unstyled components">
             <!-- <p>Dummy Heading</p> -->
             <li v-for="(ui, index) in schemaOrder" :key="index">
-                <a
+                <a @click="setActivity(index)"
                 v-if="visibility[index]"
                 :class="{'current': index===activityIndex}">
                   <circleProgress
@@ -136,7 +136,7 @@ export default {
   },
   data() {
     return {
-      sidebarActive: false,
+      sidebarActive: true,
       selected_language: 'en',
       visibility: {},
       cache: {},
@@ -154,10 +154,12 @@ export default {
       }
     },
     setActivity(index) {
-      if (this.$route.query.url) {
-        this.$router.push(`/activities/${index}?url=${this.$route.query.url}`);
-      } else {
-        this.$router.push(`/activities/${index}`);
+      if (this.checkAdvance) { // check if autoadvance not enabled
+        if (this.$route.query.url) {
+          this.$router.push(`/activities/${index}?url=${this.$route.query.url}`);
+        } else {
+          this.$router.push(`/activities/${index}`);
+        }
       }
     },
     updateProgress(progress) {
@@ -453,7 +455,6 @@ export default {
                 const index = this.schemaOrder.indexOf(this.schemaNameMapper[item]);
                 payload[this.schemaNameMapper[item]] = this.scores[index];
               });
-              console.log(43, payload);
               return {
                 url: condition['http://schema.org/url'][0]['@value'],
                 method: condition['http://schema.org/httpMethod'][0]['@value'],
