@@ -14,9 +14,9 @@
 
     <!-- If type is radio -->
     <div v-if="inputType==='radio'">
-        <Radio
-          :constraints="valueConstraints"
-          :selected_language="selected_language"
+      <Radio
+        :constraints="valueConstraints"
+        :selected_language="selected_language"
         :init="init" v-on:valueChanged="sendData"/>
     </div>
 
@@ -30,10 +30,10 @@
 
     <!-- If type is audioRecord -->
     <div v-else-if="inputType==='audioRecord'">
-        <AudioRecord
-          :constraints="valueConstraints"
-          :selected_language="selected_language"
-          :init="init" v-on:valueChanged="sendData"/>
+      <AudioRecord
+        :constraints="valueConstraints"
+        :selected_language="selected_language"
+        :init="init" v-on:valueChanged="sendData"/>
     </div>
 
     <div v-else-if="inputType==='audioPassageRecord'">
@@ -45,7 +45,7 @@
 
     <!-- If type is audioImageRecord -->
     <div v-else-if="inputType==='audioImageRecord'">
-        <AudioRecord
+      <AudioRecord
         :constraints="valueConstraints"
         :selected_language="selected_language"
         :init="init" v-on:valueChanged="sendData"
@@ -63,19 +63,19 @@
 
     <!-- If type is text -->
     <div v-else-if="inputType==='text'">
-        <TextInput
-          :constraints="valueConstraints"
-          :selected_language="selected_language"
-          :init="init" v-on:valueChanged="sendData"/>
+      <TextInput
+        :constraints="valueConstraints"
+        :selected_language="selected_language"
+        :init="init" v-on:valueChanged="sendData"/>
     </div>
 
     <!-- If type is time rnage -->
     <div v-else-if="inputType==='timeRange'">
-        <TimeRange
-          :constraints="valueConstraints"
-          :selected_language="selected_language"
-          :id="'timeRange' + Math.floor(Math.random()*1000)"
-          :init="init" v-on:valueChanged="sendData"/>
+      <TimeRange
+        :constraints="valueConstraints"
+        :selected_language="selected_language"
+        :id="'timeRange' + Math.floor(Math.random()*1000)"
+        :init="init" v-on:valueChanged="sendData"/>
     </div>
 
     <!-- If type is text -->
@@ -85,18 +85,26 @@
 
     <!-- If type is number -->
     <div v-else-if="inputType==='number'">
-        <IntegerInput
-          :constraints="valueConstraints"
-          :selected_language="selected_language"
-          :init="init" v-on:valueChanged="sendData"/>
+      <IntegerInput
+        :constraints="valueConstraints"
+        :selected_language="selected_language"
+        :init="init" v-on:valueChanged="sendData"/>
+    </div>
+
+    <!-- If type is float -->
+    <div v-else-if="inputType==='float'">
+      <FloatInput
+        :constraints="valueConstraints"
+        :selected_language="selected_language"
+        :init="init" v-on:valueChanged="sendData"/>
     </div>
 
     <!-- If type is date -->
     <div v-else-if="inputType==='date'">
-        <DateInput
-          :constraints="valueConstraints"
-          :selected_language="selected_language"
-          :init="init" v-on:valueChanged="sendData"/>
+      <DateInput
+        :constraints="valueConstraints"
+        :selected_language="selected_language"
+        :init="init" v-on:valueChanged="sendData"/>
     </div>
 
     <!-- If type is document upload -->
@@ -178,93 +186,95 @@
 </template>
 
 <script>
-import Radio from '../Inputs/WebRadio/';
-import AudioRecord from '../Inputs/WebAudioRecord/';
-import TextInput from '../Inputs/WebTextInput/';
-import IntegerInput from '../Inputs/WebIntegerInput/';
-import DateInput from '../Inputs/YearInput/';
-import MultiPart from '../MultiPart/';
-import DocumentUpload from '../Inputs/DocumentUpload';
-import MultiTextInput from '../Inputs/MultiTextInput';
-import SliderInput from '../Inputs/SliderInput';
-import TimeRange from '../Inputs/TimeRange';
-import SelectInput from '../Inputs/SelectInput';
-import AudioCheckRecord from '../Inputs/AudioCheckRecord';
-import StaticReadOnly from '../Inputs/StaticReadOnly';
-import SaveData from '../Inputs/SaveData/SaveData';
-import StudySign from '../StudySign/StudySign';
-import Static from '../Inputs/Static';
+  import Radio from '../Inputs/WebRadio/';
+  import AudioRecord from '../Inputs/WebAudioRecord/';
+  import TextInput from '../Inputs/WebTextInput/';
+  import IntegerInput from '../Inputs/WebIntegerInput/';
+  import FloatInput from '../Inputs/WebFloatInput/';
+  import DateInput from '../Inputs/YearInput/';
+  import MultiPart from '../MultiPart/';
+  import DocumentUpload from '../Inputs/DocumentUpload';
+  import MultiTextInput from '../Inputs/MultiTextInput';
+  import SliderInput from '../Inputs/SliderInput';
+  import TimeRange from '../Inputs/TimeRange';
+  import SelectInput from '../Inputs/SelectInput';
+  import AudioCheckRecord from '../Inputs/AudioCheckRecord';
+  import StaticReadOnly from '../Inputs/StaticReadOnly';
+  import SaveData from '../Inputs/SaveData/SaveData';
+  import StudySign from '../StudySign/StudySign';
+  import Static from '../Inputs/Static';
 
 
-export default {
-  name: 'InputSelector',
-  props: {
-    inputType: {
-      type: String,
-    },
-    readOnly: {
-      type: Boolean,
-    },
-    title: {
-      type: String,
-    },
-    valueConstraints: {
-      type: Object,
-    },
-    init: {
+  export default {
+    name: 'InputSelector',
+    props: {
+      inputType: {
+        type: String,
+      },
+      readOnly: {
+        type: Boolean,
+      },
+      title: {
+        type: String,
+      },
+      valueConstraints: {
+        type: Object,
+      },
+      init: {
 
+      },
+      selected_language: {
+        type: String,
+      },
+      showPassOptions: {
+        type: Object,
+      },
+      preamble: {
+        type: String,
+      },
+      ipAddress: {
+        type: String,
+      },
     },
-    selected_language: {
-      type: String,
+    components: {
+      StudySign,
+      SaveData,
+      Radio,
+      AudioRecord,
+      TextInput,
+      IntegerInput,
+      FloatInput,
+      DateInput,
+      DocumentUpload,
+      MultiTextInput,
+      SliderInput,
+      MultiPart,
+      TimeRange,
+      SelectInput,
+      AudioCheckRecord,
+      StaticReadOnly,
+      Static,
     },
-    showPassOptions: {
-      type: Object,
-    },
-    preamble: {
-      type: String,
-    },
-    ipAddress: {
-      type: String,
-    },
-  },
-  components: {
-    StudySign,
-    SaveData,
-    Radio,
-    AudioRecord,
-    TextInput,
-    IntegerInput,
-    DateInput,
-    DocumentUpload,
-    MultiTextInput,
-    SliderInput,
-    MultiPart,
-    TimeRange,
-    SelectInput,
-    AudioCheckRecord,
-    StaticReadOnly,
-    Static,
-  },
-  data() {
-    return {
+    data() {
+      return {
 
-    };
-  },
-  methods: {
-    skip() {
-      this.$emit('skip');
+      };
     },
-    dontKnow() {
-      this.$emit('dontKnow');
+    methods: {
+      skip() {
+        this.$emit('skip');
+      },
+      dontKnow() {
+        this.$emit('dontKnow');
+      },
+      sendData(val) {
+        if (val instanceof Date) {
+          this.$emit('valueChanged', val.getFullYear());
+        } else this.$emit('valueChanged', val);
+        this.$emit('next');
+      },
     },
-    sendData(val) {
-      if (val instanceof Date) {
-        this.$emit('valueChanged', val.getFullYear());
-      } else this.$emit('valueChanged', val);
-      this.$emit('next');
-    },
-  },
-};
+  };
 </script>
 
 <style>
@@ -279,7 +289,7 @@ export default {
   }
 
   .scroll::-webkit-scrollbar-track {
-      -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
   }
 
   .scroll::-webkit-scrollbar-thumb {

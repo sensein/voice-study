@@ -183,7 +183,13 @@ export default {
     },
     title() {
       if (this.data['http://schema.org/question']) {
+        // console.log(186, this.selected_language, this.data['http://schema.org/question']);
         const activeQuestion = _.filter(this.data['http://schema.org/question'], q => q['@language'] === this.selected_language);
+        if (!Array.isArray(activeQuestion) || !activeQuestion.length) {
+          // array does not exist, is not an array, or is empty
+          // ⇒ return value in default language
+          return this.data['http://schema.org/question'][0]['@value'];
+        }
         return activeQuestion[0]['@value'];
       }
       return null;
@@ -286,6 +292,7 @@ export default {
       this.sendNext();
     },
     setScore(key, scoreObj) {
+      // console.log(291, 'score obj', scoreObj, this.index);
       this.$emit('setScores', scoreObj, this.index);
     },
     setMPResponse(index, value) {

@@ -2,32 +2,35 @@
   <div id="app" class="">
     <div class="wrapper">
       <!-- Sidebar -->
-      <nav id="sidebar" class="active" ref="sidebar">
+      <nav id="sidebar" v-bind:class="{'active':checkDisableBack}" ref="sidebar">
         <div class="sidebar-header">
           <h3>Activities</h3>
         </div>
         <div>
           <select v-model="selected_language">
             <option disabled value="">Select Language</option>
+            <!--<option v-for="item in getListofLanguages" :value="item"
+            :key="item">{{item}}</option>-->
             <option value="en">English</option>
+            <option value="es">Spanish</option>
           </select>
         </div>
         <ul class="list-unstyled components">
-            <!-- <p>Dummy Heading</p> -->
-            <li v-for="(ui, index) in schemaOrder" :key="index">
-                <a
-                v-if="visibility[index]"
-                :class="{'current': index===activityIndex}">
-                  <circleProgress
-                   :radius="20"
-                   :progress="progress[index]"
-                   :stroke="4"
-                   strokeColor="#007bff" />
-                   <span class="align-middle activityItem">
+          <!-- <p>Dummy Heading</p> -->
+          <li v-for="(ui, index) in schemaOrder" :key="index">
+            <a @click="setActivity(index)"
+               v-if="visibility[index]"
+               :class="{'current': index===activityIndex}">
+              <circleProgress
+                :radius="20"
+                :progress="progress[index]"
+                :stroke="4"
+                strokeColor="#007bff" />
+              <span class="align-middle activityItem">
                      {{getName(ui)}}
                    </span>
-                </a>
-            </li>
+            </a>
+          </li>
         </ul>
         <div>
           <b-button class="align-middle" @click="downloadZipData"
@@ -37,40 +40,43 @@
 
       <!-- Page Content -->
       <div id="content">
-          <!-- We'll fill this with dummy content -->
-          <nav class="navbar navbar-expand-lg navbar-light bg-light">
-              <div class="container-fluid">
-                <b-navbar-nav>
-                  <button @click="toggleSidebar"
-                          type="button"
-                          id="sidebarCollapse"
-                          class="btn">
-                      <span class="navbar-toggler-icon"></span>
-                  </button>
-                </b-navbar-nav>
+        <nav class="navbar sticky-top navbar-custom">
+          <div class="navbar-brand">
+            Voice-up is a demo and not an actual study.
+          </div>
+        </nav>
+        <!-- We'll fill this with dummy content -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid">
+            <b-navbar-nav>
+              <button @click="toggleSidebar"
+                      type="button"
+                      id="sidebarCollapse"
+                      class="btn">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+            </b-navbar-nav>
 
-                  <b-navbar-nav class="float-right">
-                    <b-nav-item :to="{name: 'Landing', query: $route.query}" exact>Home</b-nav-item>
-                  </b-navbar-nav>
-              </div>
-          </nav>
-          <b-container>
-            <router-view
-              :srcUrl="srcUrl" :responses="responses[activityIndex]"
-              :selected_language="selected_language"
-              :ipAddress="clientIp"
-              :progress="progress[activityIndex]"
-              :autoAdvance="checkAdvance"
-              :actVisibility="Object.values(visibility)"
-              :nextActivity="nextActivity"
-              v-on:updateProgress="updateProgress"
-              v-on:saveResponse="saveResponse"
-              v-on:saveScores="saveScores"
-              v-on:clearResponses="clearResponses"
-            />
-          </b-container>
-          <div class="spacer"></div>
-          <Footer/>
+            <b-navbar-nav class="float-right">
+              <b-nav-item :to="{name: 'Landing', query: $route.query}" exact>Home</b-nav-item>
+            </b-navbar-nav>
+          </div>
+        </nav>
+        <b-container>
+          <router-view
+            :srcUrl="srcUrl" :responses="responses[activityIndex]"
+            :selected_language="selected_language"
+            :ipAddress="clientIp"
+            :progress="progress[activityIndex]"
+            :autoAdvance="checkAdvance"
+            :actVisibility="Object.values(visibility)"
+            :nextActivity="nextActivity"
+            v-on:updateProgress="updateProgress"
+            v-on:saveResponse="saveResponse"
+            v-on:saveScores="saveScores"
+            v-on:clearResponses="clearResponses"
+          />
+        </b-container>
       </div>
     </div>
   </div>
@@ -87,7 +93,6 @@ import { saveAs } from 'file-saver';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import circleProgress from './components/Circle/';
-import Footer from './components/Footer/';
 
 Vue.use(BootstrapVue);
 Vue.filter('reverse', value => value.slice().reverse());
@@ -102,7 +107,7 @@ function getFilename(s) {
 }
 
 function getVariableName(s, variableMap) {
-  const vmap = variableMap[0]['@list'];
+  const vmap = variableMap;
   const mapper = {};
   _.map(vmap, (v) => {
     const uri = v[`${reproterms}isAbout`][0]['@id'];
@@ -116,12 +121,11 @@ export default {
   name: 'App',
   components: {
     circleProgress,
-    Footer,
   },
   data() {
     return {
-      sidebarActive: false,
-      selected_language: 'en',
+      sidebarActive: true,
+      selected_language: '',
       visibility: {},
       cache: {},
       isAnswered: false,
@@ -137,11 +141,35 @@ export default {
         this.$refs.sidebar.className = '';
       }
     },
+    getDefaultLanguage() {
+      return 'es';
+    },
+    getDisplayName(activityUrl, displayNameMap) {
+      // const dmap = displayNameMap;
+      const s = _.filter(displayNameMap, v1 => v1[`${reproterms}isAbout`][0]['@id'] === activityUrl);
+      const dName = _.filter(s[0]['http://schema.org/alternateName'], d => d['@language'] === this.selected_language);
+
+      if (!Array.isArray(dName) || !dName.length) {
+        // array does not exist, is not an array, or is empty
+        // ⇒ do not attempt to process array
+        return s[0]['http://schema.org/alternateName'][0]['@value'];
+      }
+      return dName[0]['@value'];
+      // console.log(118, dName[0]['@value']);
+      // const mapper = {};
+      // _.map(dmap, (v) => {
+      //   const vr = _.filter(v[`${reproterms}variableName`], v1 => v1['@language'] === 'en');
+      //   const dName = _.filter(v['http://schema.org/alternateName'], v1 => v1['@language'] === 'en');
+      //   // mapper[vr[0]['@value']] = dName[0]['@value'];
+      // });
+    },
     setActivity(index) {
-      if (this.$route.query.url) {
-        this.$router.push(`/activities/${index}?url=${this.$route.query.url}`);
-      } else {
-        this.$router.push(`/activities/${index}`);
+      if (!this.checkDisableBack) { // check if disableBack not enabled
+        if (this.$route.query.url) {
+          this.$router.push(`/activities/${index}?url=${this.$route.query.url}`);
+        } else {
+          this.$router.push(`/activities/${index}`);
+        }
       }
     },
     updateProgress(progress) {
@@ -159,7 +187,6 @@ export default {
       }
     },
     saveResponse(key, value) {
-      // console.log(152, key, value);
       let needsVizUpdate = false;
       if (this.currentResponse[key] !== value && this.progress[this.activityIndex] === 100) {
         // there has been a change in an already completed activity
@@ -174,7 +201,6 @@ export default {
       this.isAnswered = true;
     },
     saveScores(key, scoreObj) {
-      // console.log(168, key, scoreObj);
       this.$store.dispatch('saveScores', { key, scoreObj });
     },
     clearResponses() {
@@ -185,13 +211,15 @@ export default {
       // TODO: this is a hack. the jsonld expander should give us this info.
       if (url) {
         if (!_.isEmpty(this.$store.state.schema)) {
-          const nameMap = this.$store.state.schema[`${reproterms}activity_display_name`][0];
-          if (url in nameMap) {
-            const mappedUrl = nameMap[url][0]['@id'];
-            const folders = mappedUrl.split('/');
-            const N = folders.length;
-            return folders[N - 1].split('_schema')[0].split('.jsonld')[0];
-          }
+          const dname = this.getDisplayName(url, this.$store.state.schema[`${reproterms}displayNameMap`]);
+          return dname;
+          // const nameMap = this.$store.state.schema[`${reproterms}activity_display_name`][0];
+          // if (url in nameMap) {
+          //   const mappedUrl = nameMap[url][0]['@id'];
+          //   const folders = mappedUrl.split('/');
+          //   const N = folders.length;
+          //   return folders[N - 1].split('_schema')[0].split('.jsonld')[0];
+          // }
         }
       }
       return null;
@@ -219,9 +247,7 @@ export default {
         // console.log('making request', request, 'cache', this.cache);
         const resp = await axios(request);
         // this.visibility[index] = resp.data;
-        console.log(223, this.cache[cacheKey], resp.data);
         this.cache[cacheKey] = resp.data.qualified;
-
         return resp.data.qualified;
       } else if (_.isString(cond)) {
         // todo: implement client-side evaluation!
@@ -332,6 +358,9 @@ export default {
     //   this.$router.push('/activities/0');
     // }
     // `http://api.ipstack.com/check?access_key=${accessKey}&hostname=1`
+    if (this.$route.query.lang) {
+      this.selected_language = this.$route.query.lang;
+    } else this.selected_language = 'en';
     axios.get('https://api.muctool.de/whois').then((resp) => {
       // console.log(32, resp.data.ip);
       this.clientIp = resp.data.ip;
@@ -373,6 +402,9 @@ export default {
       }
       return [];
     },
+    getListofLanguages() {
+      return ['en', 'es'];
+    },
     allowExport() {
       if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema[`${reproterms}allow`]) {
         // console.log(351, this.$store.state.schema[reproterms+'allow'][0]['@list']);
@@ -400,6 +432,8 @@ export default {
     },
     visibilityConditions() {
       if (this.schema[`${reproterms}visibility`]) {
+        // console.log(423, this.schema[`${reproterms}visibility`]);
+        // console.log(424, this.schema[`${reproterms}vis`]);
         return _.map(this.schemaOrder, (s) => {
           let keyName = '';
           if (this.schema[`${reproterms}variableMap`]) {
@@ -413,29 +447,40 @@ export default {
           // and reformat nicely
 
           let condition = _.filter(this.schema[`${reproterms}visibility`], c => c['@index'] === keyName);
+          const condition1 = _.filter(this.schema[`${reproterms}vis`], c => c[`${reproterms}variableName`][0]['@value'] === keyName);
           if (condition.length === 1) {
             condition = condition[0];
 
             // check which keys are in this condition:
-
+            // console.log(442, condition);
+            // console.log(443, 'cond1', condition1);
             const conditionKeys = Object.keys(condition);
-            if (conditionKeys.indexOf('@value') > -1) {
-              return condition['@value'];
-            }
+            // console.log(446, 'cond keys', conditionKeys);
+            // console.log(447, 'cond1 isVis keys', Object.keys(condition1[0][`${reproterms}isVis`][0]));
+            // console.log(448, 'cond1 variable keys', Object.keys(condition1[0][`${reproterms}variableName`][0]));
 
-            if (conditionKeys.indexOf('http://schema.org/httpMethod') > -1 &&
-              conditionKeys.indexOf('http://schema.org/url') > -1 &&
-              conditionKeys.indexOf(`${reproterms}payload`) > -1
-            ) {
+            if ('@value' in condition1[0][`${reproterms}isVis`][0]) {
+              return condition1[0][`${reproterms}isVis`][0]['@value'];
+            }
+            // if (conditionKeys.indexOf('@value') > -1) {
+            //   return condition['@value'];
+            // }
+            if (('http://schema.org/httpMethod' in condition1[0][`${reproterms}isVis`][0]) &&
+                ('http://schema.org/url' in condition1[0][`${reproterms}isVis`][0]) &&
+                (`${reproterms}payload` in condition1[0][`${reproterms}isVis`][0])) {
+              // if (conditionKeys.indexOf('http://schema.org/httpMethod') > -1 &&
+              //   conditionKeys.indexOf('http://schema.org/url') > -1 &&
+              //   conditionKeys.indexOf(`${reproterms}payload`) > -1
+              // ) {
               // lets fill the payload here.
               const payload = {};
-              const payloadList = condition[`${reproterms}payload`];
+              // const payloadList = condition[`${reproterms}payload`];
+              const payloadList = condition1[0][`${reproterms}isVis`][0][`${reproterms}payload`];
               _.map(payloadList, (p) => {
                 const item = p['@value'];
                 const index = this.schemaOrder.indexOf(this.schemaNameMapper[item]);
                 payload[this.schemaNameMapper[item]] = this.scores[index];
               });
-              console.log(43, payload);
               return {
                 url: condition['http://schema.org/url'][0]['@value'],
                 method: condition['http://schema.org/httpMethod'][0]['@value'],
@@ -449,6 +494,14 @@ export default {
       }
       // return all true's:
       return _.mapValues(this.schemaOrder, () => true);
+    },
+    checkDisableBack() {
+      if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema[`${reproterms}allow`]) {
+        const allowList = _.map(this.$store.state.schema[`${reproterms}allow`][0]['@list'],
+          u => u['@id']);
+        return allowList.includes(`${reproterms}disable_back`); // if true then hide sidebar on-load and activities cannot be clicked
+      }
+      return false;
     },
     checkAdvance() {
       if (!_.isEmpty(this.$store.state.schema) && this.$store.state.schema[`${reproterms}allow`]) {
@@ -470,101 +523,116 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+  #app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+  }
 
-#content {
-  width: 100%;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+  #content {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
 
-.wrapper {
+  .wrapper {
     display: flex;
     width: 100%;
     align-items: stretch;
-}
+  }
 
-#sidebar {
+  #sidebar {
     min-width: 250px;
     max-width: 250px;
-}
+  }
 
-#sidebar.active {
+  #sidebar.active {
     margin-left: -250px;
-}
+  }
 
-@media (max-width: 768px) {
+  @media (max-width: 768px) {
     #sidebar {
-        margin-left: -250px;
+      margin-left: -250px;
     }
     #sidebar.active {
-        margin-left: 0;
+      margin-left: 0;
     }
-}
+  }
 
-#sidebar {
+  #sidebar {
     /* don't forget to add all the previously mentioned styles here too */
     transition: all 0.3s;
-}
+  }
 
-#sidebar .sidebar-header {
+  #sidebar .sidebar-header {
     padding: 20px;
-}
+  }
 
-#sidebar ul.components {
+  #sidebar ul.components {
     padding: 20px 0;
-}
+  }
 
-#sidebar ul p {
+  #sidebar ul p {
     padding: 10px;
-}
+  }
 
-#sidebar ul li a {
+  #sidebar ul li a {
     padding: 10px;
     font-size: 1.1em;
     display: block;
     cursor: pointer;
     text-align: left;
 
-}
-#sidebar ul li a:hover {
-  background-color: #17a2b8;
-  color: white;
-}
+  }
+  #sidebar ul li a:hover {
+    background-color: #17a2b8;
+    color: white;
+  }
 
-.current {
-  background-color: #17a2b8;
-  color: white !important;
-}
+  .current {
+    background-color: #17a2b8;
+    color: white !important;
+  }
 
-#sidebar ul li.active > a, a[aria-expanded="true"] {
+  #sidebar ul li.active > a, a[aria-expanded="true"] {
 
-}
-ul ul a {
+  }
+  ul ul a {
     font-size: 1.5em !important;
     padding-left: 30px !important;
 
-}
+  }
 
-select > .placeholder {
-  display: none;
-}
+  select > .placeholder {
+    display: none;
+  }
 
-.spacer {
-  flex: 1;
-}
-body {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+  .spacer {
+    flex: 1;
+  }
+  body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  .navbar-custom {
+    align-items:center;
+    background-color: #219c6d;
+    color: floralwhite;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center!important;
+    padding: .25rem .75rem .25rem .75rem;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
+  .navbar-brand {
+    font-size: 1.75rem;
+  }
 </style>
