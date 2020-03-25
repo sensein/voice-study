@@ -46,7 +46,7 @@ export default {
       this.uploadZipData();
     },
     uploadZipData() {
-      console.log('26, responses', this.$store.state.responses);
+      // console.log('26, responses', this.$store.state.responses);
       const Response = this.$store.state.responses;
       const totalScores = this.$store.state.scores;
       const totalResponse = { response: Response, scores: totalScores };

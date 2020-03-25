@@ -61,11 +61,17 @@ export default {
   },
   computed: {
     options() {
+      let text = '';
       // console.log(64, this.constraints['http://schema.org/itemListElement'][0]['@list']);
       return _.map(this.constraints['http://schema.org/itemListElement'][0]['@list'], (v) => {
         const activeValueChoices = _.filter(v['http://schema.org/name'], ac => ac['@language'] === this.selected_language);
+        if (!Array.isArray(activeValueChoices) || !activeValueChoices.length) {
+          // array does not exist, is not an array, or is empty
+          // ⇒ select value in default language
+          text = v['http://schema.org/name'][0]['@value'];
+        } else text = activeValueChoices[0]['@value'];
         return {
-          text: activeValueChoices[0]['@value'],
+          text, // ESLint object-shorthand
           value: v['http://schema.org/value'][0]['@value'],
           image: v['http://schema.org/image'] ? v['http://schema.org/image'][0]['@value'] : null,
         };

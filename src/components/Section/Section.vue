@@ -121,15 +121,15 @@ export default {
     },
     getVisibility(responses) {
       const responseMapper = this.responseMapper(responses);
-      if (!_.isEmpty(this.activity[`${reproterms}visibility`])) {
+      if (!_.isEmpty(this.activity[`${reproterms}vis`])) {
         const visibilityMapper = {};
-        _.map(this.activity[`${reproterms}visibility`], (a) => {
-          let val = a['@value'];
-          if (_.isString(a['@value'])) {
-            val = this.evaluateString(a['@value'], responseMapper);
+        _.map(this.activity[`${reproterms}vis`], (a) => {
+          let val = a[`${reproterms}isVis`][0]['@value'];
+          if (_.isString(val)) {
+            val = this.evaluateString(val, responseMapper);
           }
-          if (responseMapper[a['@index']]) {
-            visibilityMapper[responseMapper[a['@index']].ref] = val;
+          if (responseMapper[a[`${reproterms}variableName`][0]['@value']]) {
+            visibilityMapper[responseMapper[a[`${reproterms}variableName`][0]['@value']].ref] = val;
           }
         });
         return visibilityMapper;
@@ -208,7 +208,7 @@ export default {
       this.visibility = this.getVisibility(currResponses);
 
       // TODO: add back scoring logic to this component.
-      if (!_.isEmpty(this.activity[`${reproterms}scoringLogic`])) {
+      if (!_.isEmpty(this.activity[`${reproterms}scoring_logic`])) {
         _.map(this.getScoring(this.responses), (score, key) => {
           if (!_.isNaN(score)) {
             this.scores[key] = score;
@@ -226,17 +226,18 @@ export default {
       // console.log(225, 'responses', responses);
       const responseMapper = this.responseMapper(responses);
       // console.log(227, 'response mapper', responseMapper);
-      if (!_.isEmpty(this.activity[`${reproterms}scoringLogic`])) {
+      if (!_.isEmpty(this.activity[`${reproterms}scoring_logic`])) {
         const scoreMapper = {};
-        _.map(this.activity[`${reproterms}scoringLogic`], (a) => {
+        _.map(this.activity[`${reproterms}scoring_logic`], (a) => {
           // console.log(231, 'logic a', a);
-          let val = a['@value'];
-          if (_.isString(a['@value'])) {
-            val = this.evaluateString(a['@value'], responseMapper);
+          let scoreFormula = a[`${reproterms}jsExpression`][0]['@value'];
+          const scoreVariableName = a[`${reproterms}variableName`][0]['@value'];
+          if (_.isString(scoreFormula)) {
+            scoreFormula = this.evaluateString(scoreFormula, responseMapper);
             // console.log(235, 'a.val', val);
           }
-          if (responseMapper[a['@index']]) {
-            scoreMapper[responseMapper[a['@index']].ref] = val;
+          if (responseMapper[scoreVariableName]) {
+            scoreMapper[responseMapper[scoreVariableName].ref] = scoreFormula;
           }
         });
         // console.log(236, 'sec scoremapper', scoreMapper);

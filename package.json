@@ -1,8 +1,11 @@
 {
-  "name": "voice-up",
+  "name": "reproschema-ui",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "Sanu Ann Abraham <sanuann@mit.edu>",
+  "author": [
+    "akeshavan <keshavan@berkeley.edu>",
+    "Sanu Ann Abraham <sanuann@mit.edu>"
+  ],
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -11,8 +14,7 @@
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
-    "build": "node build/build.js",
-    "heroku-postbuild": "npm install --only=dev --no-shrinkwrap && npm run build"
+    "build": "node build/build.js"
   },
   "dependencies": {
     "@pencilpix/vue2-clock-picker": "^0.1.6",
@@ -96,8 +98,8 @@
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "2.6.6",
     "webpack": "^3.6.0",
-    "webpack-bundle-analyzer": "^3.3.2",
-    "webpack-dev-server": "^3.1.11",
+    "webpack-bundle-analyzer": "2.13.1",
+    "webpack-dev-server": "2.11.3",
     "webpack-merge": "^4.1.0"
   },
   "engines": {
